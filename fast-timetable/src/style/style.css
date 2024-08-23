@@ -1,0 +1,213 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.class-box{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 60%;
+    min-width: 350px;
+    margin-bottom: 10px;
+}
+.day{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 15px;
+    font-size: 25px;
+    font-weight: 900;
+}
+.single-class{
+    display: flex;
+    background: #f1f1f1;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 300px;
+    width: max-content;
+    height: max-content;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 1px 3px 9px 1px #a5a0a085;
+    margin: 15px;
+    cursor: pointer;
+    transition: all 1s;
+}
+.single-class:hover{
+    scale: 1.1;
+}
+.single-class span{
+    font-size: 15px;
+    font-weight: 600;
+    color: #575555;
+    text-align: center;
+    margin-top: 10px;
+}
+#class-name{
+    font-size: 23px;
+    font-weight: 600;
+    color: #7fac7b;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 20vh;
+    justify-content: center;
+    align-items: center;
+}
+.box h1{
+    font-size: 40px;
+    font-weight: 900;
+    color: #1f1e1e;
+    margin: 14px;
+}
+.box p{
+    text-align: center;
+    width: 90%;
+}
+.search-box{
+    display: flex;
+    width: max-content;
+    height: max-content;
+    background: #f1f1f1;
+    border-radius: 10px;
+    align-items: center;
+    padding: 10px;
+    margin: 10px;
+    width: 50%;
+    min-width: fit-content;
+    margin-bottom: 20px;
+}
+.search-box input{
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #7fac7b;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #575555;
+    border: none;
+    background: transparent;
+    outline: none;
+}
+.search-button, .about-dev, .update{
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    background: #7fac7b;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+.info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10%;
+}
+.search-button:hover, .about-dev:hover{
+    background: #5f8f5f;
+}
+.enjoy{
+    color: #575555;
+    font-size: 20px;
+}
+a{
+    display: contents;
+    text-decoration: none;
+    color: #575555;
+}
+.about-dev, .update{
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    align-self: flex-end;
+    margin: 20px;
+    text-wrap: nowrap;
+}
+.update{
+    background: rgba(29, 29, 29, 0.918);
+}
+.about-dev i, .update i, .download-apk i{
+    padding-left: 10px;
+}
+.loader {
+    margin-top: 15px;
+    width: 45px;
+    aspect-ratio: 1;
+    background: 
+      linear-gradient(#0000 calc(1*100%/6),#000 0 calc(3*100%/6),#0000 0) left   bottom,
+      linear-gradient(#0000 calc(2*100%/6),#000 0 calc(4*100%/6),#0000 0) center bottom,
+      linear-gradient(#0000 calc(3*100%/6),#000 0 calc(5*100%/6),#0000 0) right  bottom;
+    background-size: 20% 600%;
+    background-repeat: no-repeat;
+    animation: l3 1s infinite linear;
+  }
+  @keyframes l3 {
+      100% {background-position: left top,center top,right top }
+  }
+  @media screen and (max-width: 600px) {
+    .update, .about-dev{
+        font-size: 13px;
+        padding: 10px 15px;
+    }
+    .update{
+        background: none;
+        color: #000;
+    }
+  }
+  .download-apk{
+    position: fixed;
+    bottom: 20px;
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    padding: 15px 13px;
+    max-width: 200px;
+    background: #7fac7b;
+    color: white;
+    border-radius: 10px;
+    margin: 10px;
+    cursor: pointer;
+    transition: all 1s;
+  }
+  .day-filter{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 10px;
+  }
+  .day-filter-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    background: #f1f1f1;
+    color: #575555;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 1s;
+  }
+  .day-filter-item:hover{
+    background: #dad7d7;
+    color: #575555;
+  }
+    .day-filter-item.active{
+        background: #7fac7b;
+        color: white;
+    }

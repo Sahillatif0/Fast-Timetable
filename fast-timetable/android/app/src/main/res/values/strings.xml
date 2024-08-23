@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FAST Timetable</string>
+    <string name="title_activity_main">FAST Timetable</string>
+    <string name="package_name">com.timetable.com</string>
+    <string name="custom_url_scheme">com.timetable.com</string>
+</resources>
