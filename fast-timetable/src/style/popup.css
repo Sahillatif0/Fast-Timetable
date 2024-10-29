@@ -1,0 +1,172 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+.popup{
+    width: 95%;
+    max-width: 500px;
+    height: 80%;
+    background-color: var(--card-background);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+@media  (max-width: 768px){
+    .popup{
+        width: 90%;
+        height: 90%;
+    }
+    
+}
+.popup-header{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid var(--button-color);
+}
+.event-popup-header{
+  justify-content: flex-end;
+  position: sticky;
+  top: 0px;
+  z-index: 1000;
+  background: var(--card-background);
+  padding-top: 25px;
+  padding-bottom: 18px;
+}
+.popup-header h1{
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--button-color);
+}
+.close{
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: var(--button-color);
+    cursor: pointer;
+}
+.popup-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.each-class{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid var(--button-color);
+    cursor: pointer;
+}
+.each-class input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .each-class label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+    font-weight: bold;
+  }
+
+  .each-class label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #ccc;
+  }
+
+  .each-class input[type="checkbox"]:checked + label::before {
+    background-color: var(--button-color);
+  }
+
+  .each-class input[type="checkbox"]:checked + label::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .popup-footer{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 10px;
+    border-top: 1px solid var(--button-color);
+  }
+    .popup-footer button{
+        width: 100px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--button-color);
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        outline: none;
+    }
+    .popup-footer button:hover{
+        background: var(--hover-background);
+    }
+    .event-details-heading{
+      color: var(--button-color);
+      margin: 5px 0px;
+  }
+  .event-tags{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .event-tag{
+    display: flex;
+    padding: 10px;
+    background: var(--tags-bg);
+    border-radius: 10px;
+    margin: 5px;
+    font-weight: 700;
+  }
+  .event-link{
+    color: var(--button-color);
+    text-decoration: none;
+    white-space: normal;
+    font-weight: 500;
+  }
+  .event-description{
+    white-space: break-spaces;
+  }
+.event-details{
+  padding-left: 15px;
+  padding-top: 7px;
+}
+.event-details i{
+  width: 15px;
+}

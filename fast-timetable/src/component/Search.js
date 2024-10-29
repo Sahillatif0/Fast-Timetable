@@ -1,19 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-const Search = ({getData}) => {
-    const [searchTxt, setSearchTxt] = useState('');
+const Search = ({heading, searchHelpTxt,example, getData, searchTxt, setSearchTxt}) => {
     const handleKeyPress = (e) => {
         if(e.key==='Enter')
-            getData(searchTxt);
+            getData(searchTxt.trim(), false);
     }
   return (
-    <div className="box">
-        <h1>Fast Timetable</h1>
-        <p>Search for your class, specific teacher, specific subject</p>
-        <div className="search-box">
+    <div className={heading==='Events'?"box events-box":"box"}>
+        <h1>{heading}</h1>
+        <p>{searchHelpTxt}</p>
+        <div className={heading==='Events'?"search-box events-search-box":"search-box"}>
             <i className="fa fa-magnifying-glass"></i>
-            <input type="text" placeholder="e.g. bcs-3a, basit ali, coal" value={searchTxt} onKeyDown={handleKeyPress} onChange={(e)=>setSearchTxt(e.target.value)}/>
-            <button className='search-button' onClick={()=>{getData(searchTxt)}} >Search</button>
+            <input type="text" placeholder={example} value={searchTxt} onKeyDown={handleKeyPress} onChange={(e)=>setSearchTxt(e.target.value)}/>
+            <button className='search-button' onClick={()=>{getData(searchTxt.trim(), false)}} >Search</button>
         </div>
 
     </div>

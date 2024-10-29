@@ -1,137 +1,86 @@
 import './App.css';
 import './style/style.css';
-import Search from './component/Search';
-import Classes from './component/Classes';
-import apk from './FAST_Timetable.apk';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import apk from './FAST_TImetable.apk';
+import Notification from './component/Notification';
+import html_parse from 'html-react-parser';
+import CheckUpdate from './component/CheckUpdate';
+import Info from './component/Info';
+import Timetable from './component/Timetable';
+import ToggleSwitch from './component/ToggleSwitch';
+import EventsTab from './component/EventsTab';
+import RightsReserved from './component/RightsReserved';
+
 
 function App() {
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showDownload, setShowDownload] = useState(true);
-  const [Filter, setFilter] = useState('All');
-  const sheetUrl = 'https://docs.google.com/spreadsheets/d/1I4xHEoJhvX4D_0cwZ1cucr4-MacrLuUvonLOazu00Xg/gviz/tq?tqx=out:json&gid=';
-  const sheetsPageCodes = [
-    { gid: 424654452, name: 'Monday' },
-    { gid: 925764175, name: 'Tuesday' },
-    { gid: 95009550, name: 'Wednesday' },
-    { gid: 1189325615, name: 'Thursday' },
-    { gid: 1413517496, name: 'Friday' }
-  ];
+  const [NotificationVar, setNotification] = useState(null); // eslint-disable-next-line 
+  const [versionCode, setversionCode] = useState(9); 
+  const [showUpdate, setShowUpdate] = useState(false);
+  const [apkLink, setApkLink] = useState('');
 
-  const getAllData = async (sec) => {
-    setLoading(true);
-    let matches = [];
-    let allClasses = [];
-    try{
-    const promises = sheetsPageCodes.map(async (code) => {
-      let matchesDay = {sheet: code.name, classes: []};
+  const [toggle, setToggle] = useState(true);
 
-      const response = await fetch(sheetUrl + code.gid);
-      const text = await response.text();
-      const json = JSON.parse(text.substr(47).slice(0, -2));
+  const fetchedData = useRef(false);
+  const [adsComponent, setAdsComponent] = useState(null);
 
-      const rows = json.table.rows;
-      rows.forEach((row, rowIndex) => {
-        row.c.forEach((cell, colIndex) => {
-          if (cell && cell.v && (rowIndex>2 && colIndex>0)) {
-            const firstCellInRow = rows[rowIndex].c[0]?.v || '';
-            let firstCellInCol = rows[1].c[colIndex]?.v || '';
-            if(cell.v.toLowerCase().includes("lab") && firstCellInCol){
-              firstCellInCol = firstCellInCol.split('-')[0] + '-' + rows[1].c[colIndex+2]?.v.split('-')[1] || ''
-            }
-            const match = {
-              val: cell.v,
-              location: firstCellInRow,
-              slot: firstCellInCol,
-              time: ''
-            };
-            matchesDay.classes.push(match);
-          }
-        });
-      });
-
-      return matchesDay;
-    });
-
-    allClasses = await Promise.all(promises);
-    allClasses.forEach(day=>{
-      let dayCl = {sheet: day.sheet, classes: []};
-      day.classes.forEach(classDay => {
-        if(classDay.val.toLowerCase().includes(sec.toLowerCase()) || classDay.location.toLowerCase().includes(sec.toLowerCase()) || classDay.slot.toLowerCase().includes(sec.toLowerCase())){
-          dayCl.classes.push(classDay);
-        }
-      });
-      dayCl.classes = dayCl.classes.map(cl=>{
-        let time = cl.slot.split('-')[0];
-        let timeSplit = Number(time.split(':')[0]);
-        if(timeSplit<7)
-          timeSplit+=12;
-        cl.time = timeSplit+':'+time.split(':')[1];
-        return cl;
-      })
-      dayCl.classes = dayCl.classes.sort((a, b) => {
-        if(a.time.split(':')[0]===b.time.split(':')[0]){
-          return Number(a.time.split(':')[1])-Number(b.time.split(':')[1]);
-        }
-        return Number(a.time.split(':')[0])-Number(b.time.split(':')[0]);
-      });
-      matches.push(dayCl);
-    })
-    setData(matches);
-    setLoading(false);
-  }catch(err){
-    console.log(err);
-    getAllData(sec);
-  }
-
-
-
-
-  };
-  useEffect(() => {
+  const showNotification = (message, color)=>{
+    setNotification(<Notification message={message} background={color} setNotification={setNotification}/>)
     setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  }
+  
+useEffect(() => {
+  setTimeout(() => {
       setShowDownload(false)
     }, 3000);
-  
-  }, [])
+    const fetchSheetData =  async () =>{
+      try{
+      const response = await fetch("https://server-timetable1.vercel.app/data");
+      const text = await response.text();
+      const json = JSON.parse(text);
+      if(json.versionCode>versionCode){
+        setShowUpdate(true);
+        localStorage.setItem('vcode', 'true');
+      }
+      else localStorage.setItem('vcode', 'false');
+      setApkLink(json.apklink);
+      setAdsComponent(json.component?html_parse(json.component):null);
+      localStorage.setItem('apk', json.apklink);
+    }
+    catch(err){
+        console.log(err);
+        setShowUpdate('true'===localStorage.getItem('vcode'));
+      }
+    }
+    const fun = async ()=>{
+      await fetchSheetData();
+      fetchedData.current = true;
+    }
+    
+    fun();
+  }, [apkLink, showUpdate, versionCode])
   
   return (
     <div className="App">
-      <div className="info">
-        <div className="update">Real Time Updated <i className="fa fa-signal-stream"></i></div>
-        <a href="https://github.com/Sahillatif0"><div className="about-dev">About Developer <i className="fa fa-code"></i></div></a>
-      </div>
-      <Search getData={getAllData} />
-      {loading && <div className="loader"></div>}
-      <div className='all-days'>
-        <div className="day-filter">
-          {data.length>0 && 
-          <div className={Filter==='All'?"day-filter-item active":"day-filter-item"} onClick={()=>{setFilter('All')}}>All</div>}
-          {data.map((d,index)=>(
-            <div className={Filter===d.sheet?"day-filter-item active":"day-filter-item"} key={index} onClick={()=>{setFilter(d.sheet)}}>{d.sheet}</div>
-          ))}
-        </div>
-        
-      {Filter==='All' && (data.map((d, index) => (
-        <>
-          <div className="day" key={index} >{d.sheet}</div>
-          <Classes data={d.classes}/>
-          </>
-        )))}
-      {Filter!=='All' && (data.map((d, index) => (
-        Filter===d.sheet &&
-        <>
-          <div className="day" key={index} >{d.sheet}</div>
-          <Classes data={d.classes}/>
-          </>
-        )))}
-        </div>
+     <Info/>
+     <ToggleSwitch toggle={toggle} setToggle={setToggle}/>
+      {toggle?<Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>:<EventsTab/>}
       
       <a href={apk} download='FAST Timetable.apk'>
-      {showDownload?(<div className="download-apk" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK <i className="fa fa-arrow-down"></i></div>):
-      (<div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>)}
+      {/* {showDownload?(<div className="download-apk" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK <i className="fa fa-arrow-down"></i></div>):
+      (<div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>)} */}
+      {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK </div>)}
+      <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
       </a>
+
+      {NotificationVar}
+      {adsComponent}
+
+      {showUpdate && <CheckUpdate apkLink={apkLink}/>}
+      <RightsReserved/>
     </div>
   );
 }
