@@ -33,6 +33,7 @@ body{
     --shadow-color: #a5a0a085;
     --loading-color: black;
     --loading-color-op: #0000;
+    --form-input-bg: rgb(255, 255, 255);
     /* --button-color: #ef3f49; */
     --button-color: #5349be;
     /* --button-color: #7d00f9; */
@@ -54,7 +55,7 @@ body{
 }
 @media (prefers-color-scheme: dark) {
     *{
-       color: white;
+        color: white;
    }
    body {
      --background-color: rgb(0, 0, 0);
@@ -65,9 +66,10 @@ body{
      --button-color: #ef3f49;
      --button-color: #bf7fff;
      --button-color: #f96b6b;
-       --hover-background: #af4646;
+     --hover-background: #af4646;
      --shadow-color: #00000085;
      --loading-color: #e7e1e1;
+     --form-input-bg: rgb(59, 59, 59);
      --timer-bg: #1a1a1a;
    --timer-color: #cccccc;
    --timer-digit-bg: #333333;
@@ -782,7 +784,8 @@ form{
     margin: 10px;
 }
 .add-event-search-box{
-    background: rgb(59, 59, 59);
+    background: var(--form-input-bg);
+    /* background: white; */
     width: 90%;
 }
 .ReactTags__tag{
