@@ -27,9 +27,9 @@ const AddEventForm = ({setShowAddEventPopup}) => {
         if (eventData.links.length === 0) newErrors.links = 'At least one link is required';
     
     
-        if (eventData.links.some(link => !/^https?:\/\//.test(link))) {
-          newErrors.links = 'All links should start with http:// or https://';
-        }
+        // if (eventData.links.some(link => !/^https?:\/\//.test(link))) {
+        //   newErrors.links = 'All links should start with http:// or https://';
+        // }
     
         if (eventData.thumbnail && !/^https?:\/\//.test(eventData.thumbnail)) {
           newErrors.thumbnail = 'Thumbnail URL should start with http:// or https://';
@@ -42,6 +42,17 @@ const AddEventForm = ({setShowAddEventPopup}) => {
         e.preventDefault();
         if (validate()) {
           alert('Form submitted successfully!');
+          fetch('https://server-timetable1.vercel.app/addEvent', {
+            method: 'post',
+            headers: {'Content-Type':'application/json'},
+            body: eventData
+           }).then((response) => response.json())
+           .then((responseJson) => {
+             console.log(responseJson);
+           })
+           .catch((error) => {
+             console.error(error);
+           });
           // Form submission logic here
         }
       };
