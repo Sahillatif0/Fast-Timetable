@@ -1,6 +1,7 @@
 import './App.css';
 import './style/style.css';
 import { useEffect, useRef, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apk from './FAST_TImetable.apk';
 import Notification from './component/Notification';
 import html_parse from 'html-react-parser';
@@ -10,6 +11,7 @@ import Timetable from './component/Timetable';
 import ToggleSwitch from './component/ToggleSwitch';
 import EventsTab from './component/EventsTab';
 import RightsReserved from './component/RightsReserved';
+import ApproveEvent from './component/ApproveEvent';
 
 
 function App() {
@@ -38,7 +40,7 @@ useEffect(() => {
     }, 3000);
     const fetchSheetData =  async () =>{
       try{
-      const response = await fetch("https://server-timetable1.vercel.app/data");
+      const response = await fetch("https://server-timetable2.vercel.app/data");
       const text = await response.text();
       const json = JSON.parse(text);
       if(json.versionCode>versionCode){
@@ -64,24 +66,31 @@ useEffect(() => {
   }, [apkLink, showUpdate, versionCode])
   
   return (
-    <div className="App">
-     <Info/>
-     <ToggleSwitch toggle={toggle} setToggle={setToggle}/>
-      {toggle?<Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>:<EventsTab/>}
-      
-      <a href={apk} download='FAST Timetable.apk'>
-      {/* {showDownload?(<div className="download-apk" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK <i className="fa fa-arrow-down"></i></div>):
-      (<div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>)} */}
-      {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK </div>)}
-      <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
-      </a>
-
-      {NotificationVar}
-      {adsComponent}
-
-      {showUpdate && <CheckUpdate apkLink={apkLink}/>}
-      <RightsReserved/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={
+          <div className="App">
+          <Info/>
+          <ToggleSwitch toggle={toggle} setToggle={setToggle} />
+           {toggle?<Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>:<EventsTab showNotification={showNotification}/>}
+           
+           <a href={apk} download='FAST Timetable.apk'>
+           {/* {showDownload?(<div className="download-apk" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK <i className="fa fa-arrow-down"></i></div>):
+           (<div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>)} */}
+           {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK </div>)}
+           <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
+           </a>
+     
+           {NotificationVar}
+           {adsComponent}
+     
+           {showUpdate && <CheckUpdate apkLink={apkLink}/>}
+           <RightsReserved/>
+         </div>
+        }/>
+        <Route path='/admin' element={<ApproveEvent/>}/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

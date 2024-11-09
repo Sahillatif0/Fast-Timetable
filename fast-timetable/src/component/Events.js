@@ -69,7 +69,7 @@ const Events = ({heading, events}) => {
                     }
               });
                 localStorage.setItem('views-cache', JSON.stringify(cacheData));
-              console.log(cacheData);
+            //   console.log(cacheData);
             },
             { threshold: 0.7 }
           );
@@ -87,9 +87,7 @@ const Events = ({heading, events}) => {
         let ind = (screenWidth.current/componentWidth.current) | 0;
         ind = events.length>ind?ind:events.length;
         setEventPerScreen(ind);
-        console.log(ind, componentWidth.current);
         containerRef.current.style.width = ind*componentWidth.current + 'px';
-        console.log(screenWidth.current);
         const handleScroll = ()=>{
             clearTimeout(tim);
             tim = setTimeout(() => {
@@ -117,7 +115,7 @@ const Events = ({heading, events}) => {
         let timeout = setTimeout(() => {
             setloading(false);
         }, 10000);
-        if(events.length===0)
+        if(events===null || events.length===0)
             setloading(true)
         else{
             setloading(false);
@@ -128,7 +126,7 @@ const Events = ({heading, events}) => {
     <>
         <h1 className='events-heading' >{heading.toUpperCase()}</h1>
             <div className='events' ref={containerRef} style={{minWidth: '330px'}}>
-                {!loading ? (events.length>0 ? 
+                {!loading ? (events?.length>0 ? 
                 <>
                 {currentIndex!==0 && <div className="slide-arrow prev" onClick={goToPrevious}>&#10094;</div>}
                 {events.map((event, index) => (

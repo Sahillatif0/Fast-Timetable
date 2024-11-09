@@ -5,11 +5,14 @@ import AddClassesPopup from './AddClassesPopup';
 import Search from './Search';
 
 const Timetable = ({loading, setLoading, showNotification}) => {
+  const weekday = ["Monday","Monday","Tuesday","Wednesday","Thursday","Friday","Monday"];
+  const d = new Date();
+  let currentDay = weekday[(d.getDay())];
     let saved = JSON.parse(localStorage.getItem('savedClasses'));
   saved = saved?saved:[];
   const [data, setData] = useState([]);
   const [savedClasses, setSavedClasses] = useState(saved);
-  const [Filter, setFilter] = useState('All');
+  const [Filter, setFilter] = useState(currentDay?currentDay:"All");
   const [showMyClasses, setShowMyClasses] = useState(true);
   const [showAddClassesPopup, setShowAddClassesPopup] = useState(false);
   const [searchTxt, setSearchTxt] = useState('');
@@ -126,7 +129,7 @@ const Timetable = ({loading, setLoading, showNotification}) => {
 useEffect(() => {
     const fetchSheetData =  async () =>{
       try{
-      const response = await fetch("https://server-timetable1.vercel.app/data");
+      const response = await fetch("https://server-timetable2.vercel.app/data");
       const text = await response.text();
       const json = JSON.parse(text);
       sheetUrl.current = json.karachi.url;

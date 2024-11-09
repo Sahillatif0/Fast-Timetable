@@ -1,0 +1,84 @@
+.to-be-approved-events{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+.admin-event-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 95%;
+    max-width: 400px;
+    margin: 10px;
+    background-color: var(--card-background);
+    padding: 20px;
+    border-radius: 10px;
+    transition: all 1s ease-in;
+    animation: slideIn 1s ease-out;
+}
+.admin-event-title{
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--button-color);
+}
+.admin-event-date{
+    font-size: 15px;
+    font-weight: 500;
+}
+.admin-event-by{
+    font-size: 15px;
+    font-weight: 500;
+}
+.buttons{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.admin-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0px;
+    width: 45%;
+
+}
+.edit-btn{
+    background: rgb(29, 137, 179);
+}
+.edit-btn:hover{
+    background: rgb(22, 103, 134);
+}
+.approve-btn{
+    background: rgb(29, 179, 154);
+
+}
+.approve-btn:hover{
+    background: rgb(22, 134, 115);
+}
+.admin-btn i{
+    margin-left: 5px;
+}
+.events-heading{
+    text-align: center;
+}
+.toggle-switch{
+    display: flex;
+    justify-content: center;
+    margin: 20px 0px;
+}
+.toggle-option{
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    background: var(--card-background);
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.5s ease-in;
+
+}
+.active{
+    background: var(--button-color);
+}

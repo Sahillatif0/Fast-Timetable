@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
 import ReactTags from 'react-tagsinput';
+import 'react-tagsinput/react-tagsinput.css';
 import '../style/popup.css'
 
-const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
+const EditEventInfo = ({setShowEditPopup, event, change, setChange}) => {
     const [tagValue, setTagValue] = useState('')
     const [imageValue, setImageValue] = useState('')
     const [linkValue, setLinkValue] = useState('')
-    const [eventData, setEventData] = useState({name: '', description: '', eventDate: '', eventTime: '', organizer: '', location: '', thumbnail: '', images: [], tags: [], links: []})
+    const [eventData, setEventData] = useState({...event,eventDate: event.eventDate.split(' ')[0],eventTime: event.eventDate.split(' ')[1]})
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
         setEventData({
           ...eventData,
           [e.target.name]: e.target.value,
         });
+        // console.log(eventData);
       };
-    const tagsChange = (newTags)=>{
+      const tagsChange = (newTags)=>{
         setEventData({...eventData, tags: newTags});
     }
     const imagesChange = (newImages)=>{
@@ -71,7 +73,7 @@ const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
         if (eventData.thumbnail && !/^https?:\/\//.test(eventData.thumbnail)) {
           newErrors.thumbnail = 'Thumbnail URL should start with http:// or https://';
         }
-        console.log(eventData)
+    
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
       };
@@ -80,22 +82,20 @@ const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
         if (validate()) {
             const [year, month, day] = eventData.eventDate.split("-").map(Number);
             const [hours, minutes] = eventData.eventTime.split(":").map(Number);
-            fetch('https://server-timetable1.vercel.app/addEvent', {
-            // fetch('http://localhost:5000/addEvent', {
+            fetch('https://server-timetable1.vercel.app/updateEvent', {
+            // fetch('http://localhost:5000/updateEvent', {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({...eventData, eventDate: new Date(year, month - 1, day, hours, minutes)})
            }).then((response) => response.json())
            .then((responseJson) => {
+                setChange(change+1);
             //    console.log(responseJson);
-               setShowAddEventPopup(false)
-               showNotification("Event Request Submitted","green" );
             })
             .catch((error) => {
                 console.error(error);
-                showNotification("Network error",null)
             });
-          // Form submission logic here
+            setShowEditPopup(false);
         }
       };
 
@@ -104,7 +104,7 @@ const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
         <div className="popup" style={{justifyContent: 'normal', overflowY: 'scroll'}}>
             <div className="popup-header">
                 <h2>Add Event</h2>
-                <button className="close" onClick={()=>{setShowAddEventPopup(false)}}>&times;</button>
+                <button className="close" onClick={()=>{setShowEditPopup(false)}}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -182,11 +182,11 @@ const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
                     {errors.tags && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.tags}</span>}
                 </div>
                 
-                <button className='add-event-button search-button'>Add Event</button>
+                <button className='add-event-button search-button'>Update Event</button>
             </form>
         </div>
     </div>
   )
 }
 
-export default AddEventForm
+export default EditEventInfo

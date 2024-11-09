@@ -20,7 +20,7 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
         }
         return accumulator;
       }, []);
-    console.log(withoutDays);
+    // console.log(withoutDays);
     let [classes, setClasses] = useState(withoutDays);
     const searchData = (searching)=>{
         setLoading(true)
