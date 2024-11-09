@@ -18,7 +18,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showDownload, setShowDownload] = useState(true);
   const [NotificationVar, setNotification] = useState(null); // eslint-disable-next-line 
-  const [versionCode, setversionCode] = useState(9); 
+  const [versionCode, setversionCode] = useState(10); 
   const [showUpdate, setShowUpdate] = useState(false);
   const [apkLink, setApkLink] = useState('');
 
@@ -75,8 +75,6 @@ useEffect(() => {
            {toggle?<Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>:<EventsTab showNotification={showNotification}/>}
            
            <a href={apk} download='FAST Timetable.apk'>
-           {/* {showDownload?(<div className="download-apk" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK <i className="fa fa-arrow-down"></i></div>):
-           (<div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>)} */}
            {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK </div>)}
            <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
            </a>
