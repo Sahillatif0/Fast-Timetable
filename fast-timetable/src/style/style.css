@@ -519,7 +519,7 @@ a{
 
 .active-option{
     position: absolute;
-    left: 7px;
+    left: 50%;
     background: var(--button-color);
     z-index: 1;
 }
