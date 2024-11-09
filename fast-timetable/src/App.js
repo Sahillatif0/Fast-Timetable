@@ -2,7 +2,7 @@ import './App.css';
 import './style/style.css';
 import { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import apk from './FAST_TImetable.apk';
+import apk from './FAST_Timetable.apk';
 import Notification from './component/Notification';
 import html_parse from 'html-react-parser';
 import CheckUpdate from './component/CheckUpdate';
