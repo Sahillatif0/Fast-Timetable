@@ -22,7 +22,7 @@ function App() {
   const [showUpdate, setShowUpdate] = useState(false);
   const [apkLink, setApkLink] = useState('');
 
-  const [toggle, setToggle] = useState(true);
+  const [toggle, setToggle] = useState(false);
 
   const fetchedData = useRef(false);
   const [adsComponent, setAdsComponent] = useState(null);
