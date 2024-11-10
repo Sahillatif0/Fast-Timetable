@@ -85,8 +85,8 @@ const Events = ({heading, events}) => {
         const components = document.querySelector('.event-card');
         if(comps!==components)
             setComps(components);
-        if(components && events){
-        componentWidth.current =  (components.offsetWidth + 36);
+        if(events){
+        componentWidth.current =  components?(components.offsetWidth + 36):436;
         setComponentWidth(componentWidth.current);
         let ind = (screenWidth.current/componentWidth.current) | 0;
         ind = events.length>ind?ind:events.length;
