@@ -105,8 +105,11 @@ const Events = ({heading, events}) => {
         containerRef.current.addEventListener('scroll', handleScroll);
         }
         window.addEventListener('resize', updateScreenWidth);
+        window.addEventListener('scroll', updateScreenWidth);
+
         return ()=>{
             window.removeEventListener('resize', updateScreenWidth);
+            window.removeEventListener('scroll', updateScreenWidth);
             observer.disconnect();
         }
 
