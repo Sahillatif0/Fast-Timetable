@@ -14,6 +14,7 @@ const Events = ({heading, events}) => {
     const [eventPerScreen, setEventPerScreen] = useState(1);
     const [popupEvent, setPopupEvent] = useState(events?events[0]:{});
     const [loading, setloading] = useState(false);
+    const [comps, setComps] = useState(document.querySelector('.event-card'));
 
     const updateEventRef = (ind, el)=>{
         eventCardRef.current[ind] = el;
@@ -50,6 +51,7 @@ const Events = ({heading, events}) => {
         setShowEventPopup(true);
     }
     useEffect(() => {
+        console.log(events);
         let tim;
         const observer = new IntersectionObserver(
             (entries) => {
@@ -81,6 +83,8 @@ const Events = ({heading, events}) => {
         }
             
         const components = document.querySelector('.event-card');
+        if(comps!==components)
+            setComps(components);
         if(components && events){
         componentWidth.current =  (components.offsetWidth + 36);
         setComponentWidth(componentWidth.current);
@@ -113,7 +117,7 @@ const Events = ({heading, events}) => {
             observer.disconnect();
         }
 
-    },[screenWidthState, componentWidthState, events])
+    },[screenWidthState, componentWidthState, events, comps])
     useEffect(()=>{
         let timeout = setTimeout(() => {
             setloading(false);
