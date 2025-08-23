@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-const ToggleSwitch = ({toggle, setToggle}) => {
+const ToggleMyClasses = ({toggle, setToggle}) => {
   const optionRef = useRef(null)
   const changeOption = (option)=>{
     if(option === 'time'){
@@ -13,18 +13,18 @@ const ToggleSwitch = ({toggle, setToggle}) => {
     }
   }
   return (
-    <div className="switch">
-        <div className={`option active-option ${toggle?"active-option-2":""}`} ref={optionRef}></div>
+    <div className="switch mb-2">
+        <div className={`option active-option ${toggle?"active-option-2":""}`}  ref={optionRef}></div>
         <div className={!toggle?'option':'option active-opt'} onClick={()=>changeOption('time')}>
-            <i className="fa fa-calendar-days option-text"></i>
-            <span className='option-text'>TimeTable</span>
+            <i className="fa fa-user option-text"></i>
+            <span className='option-text'>My Classes</span>
         </div>
         <div className={toggle?'option':'option active-opt'} onClick={()=>changeOption('events')}>
-            <i className="fa fa-list-check option-text"></i>
-            <span className='option-text'>Events</span>
+            <i className="fa fa-users option-text"></i>
+            <span className='option-text'>All Classes</span>
         </div>
     </div>
   )
 }
 
-export default ToggleSwitch
+export default ToggleMyClasses

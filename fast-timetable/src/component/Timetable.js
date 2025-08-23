@@ -3,6 +3,7 @@ import Classes from './Classes';
 import { useEffect, useRef, useState } from 'react';
 import AddClassesPopup from './AddClassesPopup';
 import Search from './Search';
+import ToggleMyClasses from './ToggleMyClasses';
 
 const Timetable = ({loading, setLoading, showNotification}) => {
   const weekday = ["Monday","Monday","Tuesday","Wednesday","Thursday","Friday","Monday"];
@@ -32,6 +33,7 @@ const Timetable = ({loading, setLoading, showNotification}) => {
       day.classes.forEach(classDay => {
           if(showMyRef.current){
             savedClasses.forEach(each=>{
+              console.log("each: ", onlyMyClasses);
               if(onlyMyClasses){
                 if(classDay.val.toLowerCase().includes(each.val.toLowerCase())){
                   dayCl.classes.push(classDay);
@@ -126,6 +128,11 @@ const Timetable = ({loading, setLoading, showNotification}) => {
   
   
 };
+
+useEffect(()=>{
+  console.log(showMyClasses);
+}, [showMyClasses])
+
 useEffect(() => {
     const fetchSheetData =  async () =>{
       try{
@@ -189,14 +196,24 @@ useEffect(() => {
     }, 500);
     // eslint-disable-next-line
   },[]);
+
+  const handleShowMyClasses = (val) =>{
+    setShowMyClasses(val);
+    showMyRef.current = val;
+    if(showMyRef.current)
+      getAllData('', true);
+    else
+      getAllData(searchTxt, false);
+  }
   
   return (
     <>
     <Search heading="Fast Timetable" searchHelpTxt="Search for your class, specific teacher, specific subject" example="e.g. bcs-3a, basit ali, coal" getData={getAllData} searchTxt={searchTxt} setSearchTxt={setSearchTxt}/>
     {loading && <div className="loader"></div>}
+      {/* <div className={showMyClasses?"day-filter-item active":"day-filter-item no-active"} onClick={()=>{setShowMyClasses(!showMyClasses); showMyRef.current=!showMyClasses; if(showMyRef.current)getAllData('', true);else getAllData(searchTxt, false)}}>My Classes</div> */}
+      <ToggleMyClasses toggle={showMyClasses} setToggle={handleShowMyClasses} />
       <div className='all-days'>
         <div className="day-filter">
-          <div className={showMyClasses?"day-filter-item active":"day-filter-item no-active"} onClick={()=>{setShowMyClasses(!showMyClasses); showMyRef.current=!showMyClasses; if(showMyRef.current)getAllData('', true);else getAllData(searchTxt, false)}}>My Classes</div>
           {data.length>0 && 
           <div className={Filter==='All'?"day-filter-item active":"day-filter-item"} onClick={()=>{setFilter('All')}}>All</div>}
           {data.map((d,index)=>(

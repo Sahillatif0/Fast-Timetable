@@ -46,7 +46,7 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
             </div>
             <div className="search-box sb-pp">
                 <i className="fa fa-magnifying-glass"></i>
-                <input type="text" placeholder="e.g. bcs-3a, basit ali, coal" value={searchTxt} onKeyDown={handleKeyPress} onChange={(e)=>{setSearchTxt(e.target.value);searchData(e.target.value)}}/>
+                <input type="text" placeholder="e.g. bcs-3a, basit ali, coal" className='add-search-input' value={searchTxt} onKeyDown={handleKeyPress} onChange={(e)=>{setSearchTxt(e.target.value);searchData(e.target.value)}}/>
                 <button className='search-button' onClick={()=>{}} >Search</button>
             </div>
             <div className="popup-content">

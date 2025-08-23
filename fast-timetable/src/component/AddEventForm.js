@@ -1,55 +1,47 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactTags from 'react-tagsinput';
 import '../style/popup.css'
 
-const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
+const InputBox = ({inputType, label, name, value, setEventData, eventData, placeholder, errors}) => {
+    const [tags, setTags] = useState([]);
     const [tagValue, setTagValue] = useState('')
-    const [imageValue, setImageValue] = useState('')
-    const [linkValue, setLinkValue] = useState('')
-    const [eventData, setEventData] = useState({name: '', description: '', eventDate: '', eventTime: '', organizer: '', location: '', thumbnail: '', images: [], tags: [], links: []})
-    const [errors, setErrors] = useState({});
-    const handleChange = (e) => {
-        setEventData({
-          ...eventData,
-          [e.target.name]: e.target.value,
-        });
-      };
     const tagsChange = (newTags)=>{
-        setEventData({...eventData, tags: newTags});
-    }
-    const imagesChange = (newImages)=>{
-        setEventData({...eventData, images: newImages});
-    }
-    const linksChange = (newLinks)=>{
-        setEventData({...eventData, links: newLinks});
+        setTagValue(newTags);
     }
     const handleChangeInputTag = (input) => {
         if(input.length>2 && input[input.length-1]===' ' && input[input.length-2]===','){
             const tag = input.slice(0, -2).trim();
             if(tag)
-                setEventData({...eventData, tags: [...eventData.tags, tag]});
+                setTags([...tags, tag]);
             input = '';
         }
         setTagValue(input);
-        };
-    const handleChangeInputImage = (input) => {
-        if(input.length>2 && input[input.length-1]===' ' && input[input.length-2]===','){
-            const tag = input.slice(0, -2).trim();
-            if(tag)
-                setEventData({...eventData, images: [...eventData.images, tag]});
-            input = '';
-        }
-        setImageValue(input);
-        };
-    const handleChangeInputLinks = (input) => {
-        if(input.length>2 && input[input.length-1]===' ' && input[input.length-2]===','){
-            const tag = input.slice(0, -2).trim();
-            if(tag)
-                setEventData({...eventData, links: [...eventData.links, tag]});
-            input = '';
-        }
-        setLinkValue(input);
-        };
+    };
+    const handleChange = (e) => {
+        setEventData({
+            ...eventData,
+            [e.target.name]: e.target.value,
+        });
+    };
+    useEffect(() => {
+        if(inputType==='tags')
+            setEventData({...eventData, [name]: tags});
+    }, [tags, name]);
+    return (
+        <div className="form-group">
+            <label htmlFor={name}>{label}</label>
+            <div className="search-box add-event-search-box">
+                {inputType==='textarea'?<textarea name={name} value={value} onChange={handleChange} placeholder={placeholder} style={{resize: 'vertical', height: '100px'}}/>:
+                (inputType==='tags'?<ReactTags value={tags} onChange={tagsChange} inputProps={{placeholder: placeholder}} inputValue={tagValue} onChangeInput={handleChangeInputTag} className="custom-react-tagsinput"  addKeys={[13]}  onlyUnique/>:
+                <input type={inputType} name={name} value={value} onChange={handleChange} placeholder={placeholder}/>)}
+                {errors && <div style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors}</div>}
+            </div>
+        </div>
+    )
+}
+const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
+    const [eventData, setEventData] = useState({name: '', description: '', eventDate: '', eventTime: '', organizer: '', location: '', thumbnail: '', images: [], tags: [], links: []})
+    const [errors, setErrors] = useState({});
       const validate = () => {
         const newErrors = {};
         if (!eventData.name) newErrors.name = 'Event name is required';
@@ -71,7 +63,6 @@ const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
         if (eventData.thumbnail && !/^https?:\/\//.test(eventData.thumbnail)) {
           newErrors.thumbnail = 'Thumbnail URL should start with http:// or https://';
         }
-        console.log(eventData)
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
       };
@@ -107,80 +98,16 @@ const AddEventForm = ({setShowAddEventPopup, showNotification}) => {
                 <button className="close" onClick={()=>{setShowAddEventPopup(false)}}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="event-name">Event Name</label>
-                    <div className="search-box add-event-search-box">
-                        <input type="text" name='name' value={eventData.name} onChange={handleChange} id="event-name" placeholder="Enter Event Name"/>
-                    </div>
-                    {errors.name && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.name}</span>}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="event-desc">Event Description</label>
-                    <div className="search-box add-event-search-box" style={{width: "90%"}}>
-                        <textarea  type="text" name='description' value={eventData.description} id="event-desc" onChange={handleChange} placeholder="Enter Event Description" style={{resize: 'vertical', height: '100px'}}/>
-                    </div>
-                    {errors.description && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.description}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-date">Event Date</label>
-                    <div className="search-box add-event-search-box">
-                    <input type="date" name='eventDate' value={eventData.eventDate} onChange={handleChange} id="event-date"/>
-                    </div>
-                    {errors.eventDate && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.eventDate}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-time">Event Time</label>
-                    <div className="search-box add-event-search-box">
-                    <input name='eventTime' value={eventData.eventTime} type="time" onChange={handleChange} id="event-time"/>
-                    </div>
-                    {errors.eventTime && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.eventTime}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-organizer">Event Organizer</label>
-                    <div className="search-box add-event-search-box">
-                    <input type="text" name='organizer' value={eventData.organizer} id="event-organizer" onChange={handleChange} placeholder='Enter Event Organizer'/>
-                    </div>
-                    {errors.organizer && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.organizer}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-location">Event Location</label>
-                    <div className="search-box add-event-search-box">
-                    <input type="text" name='location' value={eventData.location} id="event-location" onChange={handleChange} placeholder='Enter Event Location'/>
-                    </div>
-                    {errors.location && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.location}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-thumbnail">Event Thumbnail(Image Link)</label>
-                    <div className="search-box add-event-search-box">
-                    <input type="text" name='thumbnail' value={eventData.thumbnail} id="event-thumbnail" onChange={handleChange} placeholder='Enter Event Thumbnail'/>
-                    </div>
-                    {errors.thumbnail && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.thumbnail}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-images">Event Other Images(Image Links, comma seperated)</label>
-                    <div className="search-box add-event-search-box">
-                        <ReactTags value={eventData.images} onChange={imagesChange} inputProps={{placeholder: "Add an event image"}} inputValue={imageValue} onChangeInput={handleChangeInputImage} className="custom-react-tagsinput" onlyUnique/>
-                    {/* <input type="text" id="event-images" placeholder='Enter Event Images'/> */}
-                    </div>
-                    {errors.images && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.images}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-links">Event Links(comma seperated)</label>
-                    <div className="search-box add-event-search-box">
-                    <ReactTags value={eventData.links} onChange={linksChange} inputProps={{placeholder: "Add an event link"}} inputValue={linkValue} onChangeInput={handleChangeInputLinks} className="custom-react-tagsinput" onlyUnique/>
-                    {/* <input type="text" id="event-links" placeholder='Enter Event Links'/> */}
-                    </div>
-                    {errors.links && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.links}</span>}
-                </div>
-                <div className="form-group">
-                <label htmlFor="event-tags">Event Tags(comma seperated)</label>
-                    <div className="search-box add-event-search-box">
-                    <ReactTags value={eventData.tags} onChange={tagsChange} inputProps={{placeholder: "Add an event tag"}} inputValue={tagValue} onChangeInput={handleChangeInputTag} className="custom-react-tagsinput" onlyUnique/>
-                    
-                    {/* <input type="text" id="event-tags" placeholder='Enter Event Tags'/> */}
-                    </div>
-                    {errors.tags && <span style={{ color: 'red', marginTop: '-15px', marginLeft: '15px'}}>{errors.tags}</span>}
-                </div>
+                <InputBox inputType='text' label='Event Name' name='name' value={eventData.name} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Name' errors={errors.name}/>
+                <InputBox inputType='textarea' label='Event Description' name='description' value={eventData.description} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Description' errors={errors.description}/>
+                <InputBox inputType='date' label='Event Date' name='eventDate' value={eventData.eventDate} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Date' errors={errors.eventDate}/>
+                <InputBox inputType='time' label='Event Time' name='eventTime' value={eventData.eventTime} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Time' errors={errors.eventTime}/>
+                <InputBox inputType='text' label='Event Organizer' name='organizer' value={eventData.organizer} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Organizer' errors={errors.organizer}/>
+                <InputBox inputType='text' label='Event Location' name='location' value={eventData.location} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Location' errors={errors.location}/>
+                <InputBox inputType='text' label='Event Thumbnail(Image Link)' name='thumbnail' value={eventData.thumbnail} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Thumbnail' errors={errors.thumbnail}/>
+                <InputBox inputType='tags' label='Event Images(Image Links, comma seperated)' name='images' value={eventData.images} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Images' errors={errors.images}/>
+                <InputBox inputType='tags' label='Event Links(comma seperated)' name='links' value={eventData.links} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Links' errors={errors.links}/>
+                <InputBox inputType='tags' label='Event Tags(comma seperated)' name='tags' value={eventData.tags} setEventData={setEventData} eventData={eventData} placeholder='Enter Event Tags' errors={errors.tags}/>
                 
                 <button className='add-event-button search-button'>Add Event</button>
             </form>
