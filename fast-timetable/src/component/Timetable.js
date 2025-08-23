@@ -33,7 +33,6 @@ const Timetable = ({loading, setLoading, showNotification}) => {
       day.classes.forEach(classDay => {
           if(showMyRef.current){
             savedClasses.forEach(each=>{
-              console.log("each: ", onlyMyClasses);
               if(onlyMyClasses){
                 if(classDay.val.toLowerCase().includes(each.val.toLowerCase())){
                   dayCl.classes.push(classDay);
@@ -49,6 +48,7 @@ const Timetable = ({loading, setLoading, showNotification}) => {
           else{
           if((classDay.val.toLowerCase().includes(sec.toLowerCase()) || classDay.location.toLowerCase().includes(sec.toLowerCase()) || classDay.slot.toLowerCase().includes(sec.toLowerCase()))){
             dayCl.classes.push(classDay);
+            console.log("each adding class")
           }
         }
       });
@@ -221,11 +221,24 @@ useEffect(() => {
           ))}
         </div>
         
-      {showMyClasses && <div className="add-class day-filter-item" onClick={()=>{setShowAddClassesPopup(true);}}>
-        <i className="fa fa-circle-plus"></i> Add My Class 
-      </div>}
-      {(showMyClasses && savedClasses.length===0) ? <div className='box'><p>No classes added! 
-        </p><p>Click "Add My Class" to add classes</p></div>:
+      {showMyClasses && <div className="empty-action-btn" onClick={()=>{setShowAddClassesPopup(true);}}>
+              <i className="fa fa-plus"></i>
+              Add My Classes  
+            </div>}
+      {(showMyClasses && savedClasses.length===0) ? 
+      (
+          <div className='empty-state-card'>
+            <div className="empty-icon">
+              <i className="fa fa-calendar-plus"></i>
+            </div>
+            <h3>No Classes Added</h3>
+            <p>Start by adding your classes to see your personalized timetable</p>
+            <div className="empty-action-btn" onClick={()=>{setShowAddClassesPopup(true);}}>
+              <i className="fa fa-plus"></i>
+              Add Classes
+            </div>
+          </div>
+        ):
       (Filter==='All' ? (data.map((d, index) => (
         <>
           <div className="day" key={"dayclasses"+index} >{d.sheet}</div>

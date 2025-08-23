@@ -12,6 +12,7 @@ import ToggleSwitch from './component/ToggleSwitch';
 import EventsTab from './component/EventsTab';
 import RightsReserved from './component/RightsReserved';
 import ApproveEvent from './component/ApproveEvent';
+import ContactSection from './component/ContactSection';
 
 
 function App() {
@@ -80,6 +81,7 @@ useEffect(() => {
            </a>
      
            {NotificationVar}
+           <ContactSection />
            {adsComponent}
      
            {showUpdate && <CheckUpdate apkLink={apkLink}/>}
