@@ -208,6 +208,7 @@ body{
     border-radius: 10px;
     align-items: center;
     padding: 10px;
+    padding-left: 20px;
     margin: 10px;
     width: 50%;
     min-width: fit-content;
@@ -224,6 +225,7 @@ body{
     border-radius: 8px;
     border: 1px solid var(--button-color);
     padding: 10px;
+    padding-left: 17px;
     font-size: 15px;
     font-weight: 600;
     color: var(--text-color);
