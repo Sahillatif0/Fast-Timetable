@@ -2,7 +2,7 @@ import './App.css';
 import './style/style.css';
 import { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import apk from './FAST_Timetable.apk';
+import apk from './Fast-Timetable.apk';
 import Notification from './component/Notification';
 import html_parse from 'html-react-parser';
 import CheckUpdate from './component/CheckUpdate';
@@ -13,13 +13,14 @@ import EventsTab from './component/EventsTab';
 import RightsReserved from './component/RightsReserved';
 import ApproveEvent from './component/ApproveEvent';
 import ContactSection from './component/ContactSection';
+import DownloadPage from './component/DownloadPage';
 
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [showDownload, setShowDownload] = useState(true);
   const [NotificationVar, setNotification] = useState(null); // eslint-disable-next-line 
-  const [versionCode, setversionCode] = useState(10); 
+  const [versionCode, setversionCode] = useState(11); 
   const [showUpdate, setShowUpdate] = useState(false);
   const [apkLink, setApkLink] = useState('');
 
@@ -89,6 +90,7 @@ useEffect(() => {
          </div>
         }/>
         <Route path='/admin' element={<ApproveEvent/>}/>
+        <Route path='/download' element={<DownloadPage apk={apk}/>}/>
       </Routes>
     </BrowserRouter>
   );

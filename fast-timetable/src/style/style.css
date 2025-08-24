@@ -134,6 +134,7 @@ body{
 .single-class:hover{
   transform: translateY(-2px);
   box-shadow: 2px 6px 12px 2px var(--shadow-color);
+  transform: scale(1.1);
 }
 .single-class:hover::before{
     display: none;
@@ -1590,7 +1591,7 @@ form{
   border-color: rgba(156, 39, 176, 0.3);
 }
 
-.contact-card.active .contact-card-glow {
+.contact-card.contact-active .contact-card-glow {
   opacity: 1;
 }
 
@@ -1646,22 +1647,38 @@ form{
 
 .contact-card[style*="4CAF50"]:hover .contact-card-title {
   color: #2E7D32;
+  color: #116815;
+}
+.contact-card:hover .contact-card-title {
+  color: #5349be;
 }
 
-.contact-card[style*="FF9800"] .contact-card-title {
-  color: var(--text-color);
+.contact-card[style*="4CAF50"]:hover .contact-card-description {
+  color: #aee4a4;
 }
 
 .contact-card[style*="FF9800"]:hover .contact-card-title {
   color: #E65100;
 }
 
+.contact-card[style*="FF9800"]:hover .contact-card-description {
+  color: #615b5d;
+}
+
 .contact-card[style*="2196F3"] .contact-card-title {
   color: var(--text-color);
 }
 
+.contact-card[style*="2196F3"]:hover .contact-card-description {
+  color: #b3d4fc;
+}
+
 .contact-card[style*="2196F3"]:hover .contact-card-title {
-  color: #0D47A1;
+  color: #094399;
+}
+
+.contact-card[style*="9C27B0"]:hover .contact-card-description {
+  color: #e1d5eeaf;
 }
 
 .contact-card[style*="9C27B0"] .contact-card-title {
@@ -1669,7 +1686,7 @@ form{
 }
 
 .contact-card[style*="9C27B0"]:hover .contact-card-title {
-  color: #4A148C;
+  color: #43055e;
 }
 
 .contact-card-description {
@@ -1702,7 +1719,7 @@ form{
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 1;
-  filter: blur(20px);
+  filter: blur(7px);
 }
 
 .contact-footer {

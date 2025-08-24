@@ -20,7 +20,7 @@ const ToggleMyClasses = ({toggle, setToggle}) => {
             <span className='option-text'>My Classes</span>
         </div>
         <div className={toggle?'option':'option active-opt'} onClick={()=>changeOption('events')}>
-            <i className="fa fa-users option-text"></i>
+            <i className="fa fa-layer-group option-text"></i>
             <span className='option-text'>All Classes</span>
         </div>
     </div>

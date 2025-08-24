@@ -129,10 +129,6 @@ const Timetable = ({loading, setLoading, showNotification}) => {
   
 };
 
-useEffect(()=>{
-  console.log(showMyClasses);
-}, [showMyClasses])
-
 useEffect(() => {
     const fetchSheetData =  async () =>{
       try{
@@ -195,7 +191,7 @@ useEffect(() => {
       }
     }, 500);
     // eslint-disable-next-line
-  },[]);
+  },[savedClasses]);
 
   const handleShowMyClasses = (val) =>{
     setShowMyClasses(val);

@@ -26,6 +26,7 @@ const InputBox = ({inputType, label, name, value, setEventData, eventData, place
     useEffect(() => {
         if(inputType==='tags')
             setEventData({...eventData, [name]: tags});
+        // eslint-disable-next-line 
     }, [tags, name]);
     return (
         <div className="form-group">

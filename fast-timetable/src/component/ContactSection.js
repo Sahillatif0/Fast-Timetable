@@ -56,7 +56,7 @@ const ContactSection = () => {
         {contactOptions.map((option) => (
           <div
             key={option.id}
-            className={`contact-card ${activeCard === option.id ? 'active' : ''}`}
+            className={`contact-card ${activeCard === option.id ? 'contact-active' : ''}`}
             onMouseEnter={() => setActiveCard(option.id)}
             onMouseLeave={() => setActiveCard(null)}
             onClick={option.action}
@@ -84,7 +84,7 @@ const ContactSection = () => {
           <span className="quick-contact-text">Quick Contact:</span>
           <div className="quick-contact-buttons">
             <a 
-              href="mailto:sahillatif853@gmail.com" 
+              href="mailto:sahillatif072@gmail.com" 
               className="quick-contact-btn quick-email"
               target="_blank"
               rel="noopener noreferrer"

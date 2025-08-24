@@ -47,33 +47,40 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
             <div className="search-box sb-pp">
                 <i className="fa fa-magnifying-glass"></i>
                 <input type="text" placeholder="e.g. bcs-3a, basit ali, coal" className='add-search-input' value={searchTxt} onKeyDown={handleKeyPress} onChange={(e)=>{setSearchTxt(e.target.value);searchData(e.target.value)}}/>
-                <button className='search-button' onClick={()=>{}} >Search</button>
+                <button className='search-button' onClick={()=>{searchData(searchTxt.trim())}} >Search</button>
             </div>
             <div className="popup-content">
             {loading && <div className="loader"></div>}
                 {classes.map((each, ind)=>{
-                    return <div className='each-class' onClick={() => {
+                    return <div key={each.val || ind} className='each-class' onClick={() => {
                         let newClasses = [...classes];
-                        let newaddClasses = addClasses;
+                        let newaddClasses = [...addClasses];
                         if(!newClasses[ind].checked){
                             newaddClasses.push(each);
                             setAddClasses(newaddClasses);
                         }
                         else{
-                            newaddClasses = newaddClasses.filter((each)=>each.val!==newClasses[ind].val);
+                            newaddClasses = newaddClasses.filter((item)=>item.val!==newClasses[ind].val);
                             setAddClasses(newaddClasses);
                         }
                         newClasses[ind].checked = !newClasses[ind].checked;
                         setClasses(newClasses);
                       }}>
-                        <input type="checkbox" name={each.key} checked={each.checked} onChange={(e) => { e.stopPropagation(); let newClasses = [...classes]; let newaddClasses = addClasses; if(e.target.checked){
-                            newaddClasses.push(each);
-                            setAddClasses(newaddClasses);
-                        }
-                        else{
-                            newaddClasses = newaddClasses.filter((each)=>each.val!==newClasses[ind].val);
-                            setAddClasses(newaddClasses);
-                        } newClasses[ind].checked = e.target.checked; setClasses(newClasses);}}/>
+                        <input type="checkbox" name={each.key} checked={each.checked || false} onChange={(e) => { 
+                            e.stopPropagation(); 
+                            let newClasses = [...classes]; 
+                            let newaddClasses = [...addClasses]; 
+                            if(e.target.checked){
+                                newaddClasses.push(each);
+                                setAddClasses(newaddClasses);
+                            }
+                            else{
+                                newaddClasses = newaddClasses.filter((item)=>item.val!==newClasses[ind].val);
+                                setAddClasses(newaddClasses);
+                            } 
+                            newClasses[ind].checked = e.target.checked; 
+                            setClasses(newClasses);
+                        }}/>
                         <label htmlFor={each.key}>{each.val}</label>
                     </div>
                 })}
