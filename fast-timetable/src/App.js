@@ -24,11 +24,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showDownload, setShowDownload] = useState(true);
   const [NotificationVar, setNotification] = useState(null); // eslint-disable-next-line 
-  const [versionCode, setversionCode] = useState(11); 
+  const [versionCode, setversionCode] = useState(12); 
   const [showUpdate, setShowUpdate] = useState(false);
   const [apkLink, setApkLink] = useState('');
 
-  const [toggle, setToggle] = useState(true);
   const [activeTab, setActiveTab] = useState('timetable'); // 'timetable', 'events', 'teachers'
 
   const fetchedData = useRef(false);

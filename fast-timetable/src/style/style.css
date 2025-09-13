@@ -1160,7 +1160,8 @@ a{
 }
 
 .active-option-2{
-  left: 7px;
+  left: 7px !important;
+  /* left: 50%; */
 }
 .active-option:hover{
     background: var(--hover-background);
