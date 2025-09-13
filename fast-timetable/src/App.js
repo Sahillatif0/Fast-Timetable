@@ -1,5 +1,6 @@
 import './App.css';
 import './style/style.css';
+import './style/notification.css';
 import { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apk from './Fast-Timetable.apk';
@@ -14,6 +15,9 @@ import RightsReserved from './component/RightsReserved';
 import ApproveEvent from './component/ApproveEvent';
 import ContactSection from './component/ContactSection';
 import DownloadPage from './component/DownloadPage';
+import Teachers from './component/Teachers';
+import Classrooms from './component/Classrooms';
+import UpdateNotification from './component/UpdateNotification';
 
 
 function App() {
@@ -25,6 +29,7 @@ function App() {
   const [apkLink, setApkLink] = useState('');
 
   const [toggle, setToggle] = useState(true);
+  const [activeTab, setActiveTab] = useState('timetable'); // 'timetable', 'events', 'teachers'
 
   const fetchedData = useRef(false);
   const [adsComponent, setAdsComponent] = useState(null);
@@ -73,8 +78,11 @@ useEffect(() => {
         <Route path='/' element={
           <div className="App">
           <Info/>
-          <ToggleSwitch toggle={toggle} setToggle={setToggle} />
-           {toggle?<Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>:<EventsTab showNotification={showNotification}/>}
+          <ToggleSwitch activeTab={activeTab} setActiveTab={setActiveTab} />
+           {activeTab === 'timetable' && <Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>}
+           {activeTab === 'events' && <EventsTab showNotification={showNotification}/>}
+           {activeTab === 'teachers' && <Teachers />}
+           {activeTab === 'classrooms' && <Classrooms />}
            
            <a href={apk} download='FAST Timetable.apk'>
            {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK </div>)}
@@ -84,6 +92,9 @@ useEffect(() => {
            {NotificationVar}
            <ContactSection />
            {adsComponent}
+           
+           {/* Update Notification - Shows once per version */}
+           <UpdateNotification />
      
            {showUpdate && <CheckUpdate apkLink={apkLink}/>}
            <RightsReserved/>
