@@ -53,14 +53,6 @@ const ToggleSwitch = ({activeTab, setActiveTab}) => {
     }
   }
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
-    
-    // Haptic feedback
-    if (navigator.vibrate) {
-      navigator.vibrate(30)
-    }
-  }
 
   if (isMobile) {
     const activeTabData = tabs.find(tab => tab.key === activeTab);
