@@ -233,7 +233,8 @@ const Classrooms = () => {
         }
         
         setLoading(false);
-    }, [selectedDay, selectedTime, days, getRoomCapacity]);
+        // eslint-disable-next-line
+    }, [selectedDay, selectedTime]);
 
     // Search functionality  
     const handleSearch = useCallback((searchValue) => {
