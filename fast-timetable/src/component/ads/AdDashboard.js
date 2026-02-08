@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchServerAnalytics, clearAnalytics } from './AdTracker';
 import './ads.css';
 
@@ -8,7 +8,7 @@ const AdDashboard = () => {
   const [error, setError] = useState(null);
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -19,11 +19,11 @@ const AdDashboard = () => {
       console.error(err);
     }
     setLoading(false);
-  };
+  }, [dateRange.start, dateRange.end]);
 
   useEffect(() => {
     loadAnalytics();
-  }, []);
+  }, [loadAnalytics]);
 
   const handleRefresh = () => {
     loadAnalytics();

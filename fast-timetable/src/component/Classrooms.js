@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const Classrooms = () => {
     const [selectedDay, setSelectedDay] = useState(() => {
@@ -81,7 +81,7 @@ const Classrooms = () => {
         initializeData();
     }, []);
 
-    const findFreeRooms = async (forceRefresh = false) => {
+    const findFreeRooms = useCallback(async (forceRefresh = false) => {
         if (!fetchedData.current) return;
         
         setLoading(true);
@@ -233,10 +233,10 @@ const Classrooms = () => {
         }
         
         setLoading(false);
-    };
+    }, [selectedDay, selectedTime]);
 
-    // Search functionality
-    const handleSearch = (searchValue) => {
+    // Search functionality  
+    const handleSearch = useCallback((searchValue) => {
         let filtered = [...freeRooms];
 
 
@@ -249,11 +249,11 @@ const Classrooms = () => {
         }
 
         setFilteredRooms(filtered);
-    };
+    }, [freeRooms]);
 
     useEffect(() => {
         handleSearch(searchText);
-    }, [searchText, freeRooms]);
+    }, [searchText, freeRooms, handleSearch]);
 
     const getRoomType = (roomName) => {
         const name = roomName.toLowerCase();
@@ -306,14 +306,14 @@ const Classrooms = () => {
         }, 500);
         
         return () => clearInterval(interval);
-    }, [selectedDay, selectedTime]);
+    }, [selectedDay, selectedTime, findFreeRooms]);
 
     // Re-fetch when day or time changes and data is ready
     useEffect(() => {
         if (fetchedData.current) {
             findFreeRooms();
         }
-    }, [selectedDay, selectedTime]);
+    }, [selectedDay, selectedTime, findFreeRooms]);
 
     const getRoomTypeIcon = (type) => {
         switch (type) {
