@@ -30,7 +30,6 @@ const Timetable = ({loading, setLoading, showNotification}) => {
     let matches = [];
     allClasses.forEach(day=>{
       let dayCl = {sheet: day.sheet, classes: []};
-      console.log(day.sheet);
       day.classes.forEach(classDay => {
           if(showMyRef.current){
             savedClasses.forEach(each=>{
@@ -49,7 +48,6 @@ const Timetable = ({loading, setLoading, showNotification}) => {
           else{
           if((classDay.val.toLowerCase().includes(sec.toLowerCase()) || classDay.location.toLowerCase().includes(sec.toLowerCase()) || classDay.slot.toLowerCase().includes(sec.toLowerCase()))){
             dayCl.classes.push(classDay);
-            console.log("each adding class")
           }
         }
       });
@@ -136,10 +134,8 @@ useEffect(() => {
     const fetchSheetData =  async () =>{
       try{
       const response = await fetch(process.env.REACT_APP_DATA_API+"/data");
-      console.log(process.env.REACT_APP_DATA_API+"/data")
       const text = await response.text();
       const json = JSON.parse(text);
-      console.log(json)
       sheetUrl.current = json.karachi.url;
       sheetsPageCodes.current = json.karachi.codes;
       localStorage.setItem('url', json.karachi.url);
