@@ -31,7 +31,7 @@ So, for the solution I thought to made a Timetable Web & APK, that are easy and 
 
 ### Website Link
 
-<https://fast-timetable.surge.sh/>
+<https://fast-tt.vercel.app/>
 
 ### APK Link
 
