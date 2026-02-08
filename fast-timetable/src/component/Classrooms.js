@@ -233,7 +233,7 @@ const Classrooms = () => {
         }
         
         setLoading(false);
-    }, [selectedDay, selectedTime]);
+    }, [selectedDay, selectedTime, days, getRoomCapacity]);
 
     // Search functionality  
     const handleSearch = useCallback((searchValue) => {
