@@ -26,14 +26,6 @@ const ToggleSwitch = ({activeTab, setActiveTab}) => {
       description: 'View class schedules'
     },
     { 
-      key: 'events', 
-      label: 'Events', 
-      icon: 'fa fa-list-check',
-      color: '#4ECDC4',
-      bgColor: '#E5F9F7',
-      description: 'Campus events & news'
-    },
-    { 
       key: 'teachers', 
       label: 'Teachers', 
       icon: 'fa fa-chalkboard-user',
@@ -149,17 +141,12 @@ const ToggleSwitch = ({activeTab, setActiveTab}) => {
       <div 
         className={`active-option ${
           activeTab === 'timetable' ? 'option-timetable' : 
-          activeTab === 'events' ? 'option-events' : 
           activeTab === 'teachers' ? 'option-teachers' : 'option-classrooms'
         }`}
       ></div>
       <div className={activeTab === 'timetable' ? 'option active-opt' : 'option'} onClick={() => setActiveTab('timetable')}>
         <i className="fa fa-calendar-days option-text"></i>
         <span className='option-text'>TimeTable</span>
-      </div>
-      <div className={activeTab === 'events' ? 'option active-opt' : 'option'} onClick={() => setActiveTab('events')}>
-        <i className="fa fa-list-check option-text"></i>
-        <span className='option-text'>Events</span>
       </div>
       <div className={activeTab === 'teachers' ? 'option active-opt' : 'option'} onClick={() => setActiveTab('teachers')}>
         <i className="fa fa-chalkboard-user option-text"></i>

@@ -5,11 +5,10 @@ const Teachers = () => {
     const [teachers, setTeachers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Load faculty data from faculty.json
     useEffect(() => {
         const loadFacultyData = async () => {
             try {
-                const response = await fetch('https://server-timetable2.vercel.app/faculty');
+                const response = await fetch(process.env.REACT_APP_DATA_API + '/api/faculty');
                 const facultyData = await response.json();
                 setTeachers(facultyData);
                 setLoading(false);
@@ -34,7 +33,6 @@ const Teachers = () => {
     }
 
     const filteredTeachers = teachers.filter(teacher => {
-        // Text search filter
         const matchesSearch = teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             teacher.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (teacher.email && teacher.email.toLowerCase().includes(searchTerm.toLowerCase())) ||

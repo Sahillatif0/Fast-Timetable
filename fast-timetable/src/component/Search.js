@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Search = ({heading, searchHelpTxt,example, getData, searchTxt, setSearchTxt}) => {
     const handleKeyPress = (e) => {
@@ -18,5 +19,14 @@ const Search = ({heading, searchHelpTxt,example, getData, searchTxt, setSearchTx
     </div>
   )
 }
+
+Search.propTypes = {
+  heading: PropTypes.string.isRequired,
+  searchHelpTxt: PropTypes.string.isRequired,
+  example: PropTypes.string.isRequired,
+  getData: PropTypes.func.isRequired,
+  searchTxt: PropTypes.string.isRequired,
+  setSearchTxt: PropTypes.func.isRequired,
+};
 
 export default Search

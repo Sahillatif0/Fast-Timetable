@@ -27,7 +27,7 @@ const UpdateNotification = () => {
         try {
             setLoading(true);
             // Replace this URL with your actual API endpoint
-            const response = await fetch('https://server-timetable2.vercel.app/updates'); // Update this to your backend URL
+            const response = await fetch(process.env.REACT_APP_DATA_API+'/updates'); // Update this to your backend URL
             const data = await response.json();
             
             if (data && Array.isArray(data)) {

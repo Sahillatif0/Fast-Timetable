@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const Classrooms = () => {
-    const [selectedDay, setSelectedDay] = useState(1); 
-    const [selectedTime, setSelectedTime] = useState('09:00-10:00');
+    const [selectedDay, setSelectedDay] = useState(() => {
+        const saved = localStorage.getItem('classrooms_selectedDay2');
+        return saved ? parseInt(saved) : 1;
+    }); 
+    const [selectedTime, setSelectedTime] = useState(() => {
+        const saved = localStorage.getItem('classrooms_selectedTime2');
+        return saved ? JSON.parse(saved) : ['09:00-10:00'];
+    });
     const [freeRooms, setFreeRooms] = useState([]);
     const [filteredRooms, setFilteredRooms] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [allTimeSlots, setAllTimeSlots] = useState([]);
+    const [allTimeSlots, setAllTimeSlots] = useState(() => {
+        const saved = localStorage.getItem('classrooms_timeSlots2');
+        return saved ? JSON.parse(saved) : [];
+    });
     const [searchText, setSearchText] = useState('');
     const [showTimeFilter, setShowTimeFilter] = useState(false);
     
@@ -23,11 +32,34 @@ const Classrooms = () => {
 
     ];
 
-    // Initialize data source (same as timetable)
+    // Save selected day to localStorage
+    useEffect(() => {
+        localStorage.setItem('classrooms_selectedDay2', selectedDay.toString());
+    }, [selectedDay]);
+
+    // Save selected time to localStorage
+    useEffect(() => {
+        localStorage.setItem('classrooms_selectedTime2', JSON.stringify(selectedTime));
+    }, [selectedTime]);
+
+    // Save time slots to localStorage
+    useEffect(() => {
+        if (allTimeSlots.length > 0) {
+            localStorage.setItem('classrooms_timeSlots2', JSON.stringify(allTimeSlots));
+        }
+    }, [allTimeSlots]);
+
+    useEffect(() => {
+        if (selectedTime.length === 0 && allTimeSlots.length > 0) {
+            setSelectedTime(allTimeSlots);
+        }
+    }, [selectedTime, allTimeSlots]);
+
+
     useEffect(() => {
         const fetchSheetData = async () => {
             try {
-                const response = await fetch("https://server-timetable2.vercel.app/data");
+                const response = await fetch(process.env.REACT_APP_DATA_API+"/data");
                 const text = await response.text();
                 const json = JSON.parse(text);
                 sheetUrl.current = json.karachi.url;
@@ -49,11 +81,27 @@ const Classrooms = () => {
         initializeData();
     }, []);
 
-    // Fetch free rooms data from the same source as timetable
-    const findFreeRooms = async () => {
+    const findFreeRooms = async (forceRefresh = false) => {
         if (!fetchedData.current) return;
         
         setLoading(true);
+        
+        // Check cache first
+        const cacheKey = `classrooms_data_${selectedDay}_${selectedTime.join('_')}`;
+        const cachedData = localStorage.getItem(cacheKey);
+        const cacheTimestamp = localStorage.getItem(`${cacheKey}_timestamp`);
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+        
+        if (!forceRefresh && cachedData && cacheTimestamp) {
+            const isValid = Date.now() - parseInt(cacheTimestamp) < CACHE_DURATION;
+            if (isValid) {
+                const parsed = JSON.parse(cachedData);
+                setFreeRooms(parsed);
+                setFilteredRooms(parsed);
+                setLoading(false);
+                return;
+            }
+        }
         
         try {
             const selectedDayData = days.find(d => d.key === selectedDay);
@@ -72,7 +120,6 @@ const Classrooms = () => {
             const json = JSON.parse(text.substr(47).slice(0, -2));
             const rows = json.table.rows;
             
-            // Extract time slots from column headers (row 1)
             const timeSlots = [];
             if (rows[1] && rows[1].c) {
                 rows[1].c.forEach((cell, colIndex) => {
@@ -83,18 +130,16 @@ const Classrooms = () => {
             }
             setAllTimeSlots(timeSlots);
             
-            // Set default time slot if none selected and time slots are available
-            if (timeSlots.length > 0 && selectedTime === '09:00-10:00' && !timeSlots.includes(selectedTime)) {
-                setSelectedTime(timeSlots[0]);
-                return; // Return early, useEffect will trigger again with new time
+            if (timeSlots.length > 0 && selectedTime.length === 1 && selectedTime[0] === '09:00-10:00' && !timeSlots.includes('09:00-10:00')) {
+                setSelectedTime([timeSlots[0]]);
+                return; 
             }
             
-            // Find the column index for the selected time slot
-            const timeColumnIndex = rows[1].c.findIndex((cell, index) => 
-                cell && cell.v === selectedTime && index > 0
+            const timeColumnIndices = selectedTime.map(selTime =>
+                rows[1].c.findIndex((cell, index) => cell && cell.v === selTime && index > 0)
             );
             
-            if (timeColumnIndex === -1) {
+            if (timeColumnIndices.every(idx => idx === -1)) {
                 setFreeRooms([]);
                 setLoading(false);
                 return;
@@ -128,32 +173,37 @@ const Classrooms = () => {
                 }
             });
             
-            // Second pass: Check for free rooms
             rows.forEach((row, rowIndex) => {
                 if (rowIndex > 2 && row.c && row.c[0] && row.c[0].v) {
                     const roomName = row.c[0].v;
                     const roomType = getRoomType(roomName);
                     
-                    // Check if the time slot is marked as occupied by any lab session
-                    const key = `${rowIndex}-${timeColumnIndex}`;
-                    const isOccupiedByLab = occupiedSlots.has(key);
+                    let isFreeAny = false;
+                    const freeTimes = [];
+                    for (let t = 0; t < timeColumnIndices.length; t++) {
+                        const timeColumnIndex = timeColumnIndices[t];
+                        if (timeColumnIndex === -1) {
+                            continue;
+                        }
+                        const key = `${rowIndex}-${timeColumnIndex}`;
+                        const isOccupiedByLab = occupiedSlots.has(key);
+                        const cell = row.c[timeColumnIndex];
+                        const hasRegularClass = cell && cell.v && cell.v.trim() !== '' && !cell.v.toLowerCase().includes('lab');
+                        if (!isOccupiedByLab && !hasRegularClass) {
+                            isFreeAny = true;
+                            freeTimes.push(selectedTime[t]);
+                        }
+                    }
                     
-                    // For any room, also check if there's a regular (non-lab) class at this exact time
-                    const cell = row.c[timeColumnIndex];
-                    const hasRegularClass = cell && cell.v && cell.v.trim() !== '' && !cell.v.toLowerCase().includes('lab');
-                    
-                    // Room is free if it's not occupied by lab sessions AND doesn't have regular classes
-                    const isFree = !isOccupiedByLab && !hasRegularClass;
-                    
-                    // If the room is free, add it to the list
-                    if (isFree) {
+                    if (isFreeAny) {
                         freeRoomsList.push({
                             id: rowIndex,
                             name: getCleanRoomName(roomName),
                             originalName: roomName,
                             type: roomType,
                             capacity: getRoomCapacity(roomName),
-                            floor: getRoomFloor(roomName)
+                            floor: getRoomFloor(roomName),
+                            freeTimes
                         });
                     }
                 }
@@ -161,10 +211,25 @@ const Classrooms = () => {
             
             setFreeRooms(freeRoomsList);
             setFilteredRooms(freeRoomsList);
+            
+            // Cache the results
+            const cacheKey = `classrooms_data_${selectedDay}_${selectedTime.join('_')}`;
+            localStorage.setItem(cacheKey, JSON.stringify(freeRoomsList));
+            localStorage.setItem(`${cacheKey}_timestamp`, Date.now().toString());
         } catch (err) {
             console.error('Error fetching room data:', err);
-            setFreeRooms([]);
-            setFilteredRooms([]);
+            
+            // Try to load from cache on error (ignore expiry)
+            const cacheKey = `classrooms_data_${selectedDay}_${selectedTime.join('_')}`;
+            const cachedData = localStorage.getItem(cacheKey);
+            if (cachedData) {
+                const parsed = JSON.parse(cachedData);
+                setFreeRooms(parsed);
+                setFilteredRooms(parsed);
+            } else {
+                setFreeRooms([]);
+                setFilteredRooms([]);
+            }
         }
         
         setLoading(false);
@@ -174,7 +239,7 @@ const Classrooms = () => {
     const handleSearch = (searchValue) => {
         let filtered = [...freeRooms];
 
-        // Apply search filter
+
         if (searchValue.trim()) {
             filtered = filtered.filter(room => 
                 room.name.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -186,12 +251,10 @@ const Classrooms = () => {
         setFilteredRooms(filtered);
     };
 
-    // Update search when text changes
     useEffect(() => {
         handleSearch(searchText);
     }, [searchText, freeRooms]);
 
-    // Helper functions to determine room properties based on name
     const getRoomType = (roomName) => {
         const name = roomName.toLowerCase();
         if (name.includes('lab') || name.includes('computer')) return 'Computer Lab';
@@ -204,13 +267,11 @@ const Classrooms = () => {
     };
 
     const getRoomCapacity = (roomName) => {
-        // Extract capacity from braces in room name (e.g., "Room A (50)" -> 50)
         const capacityMatch = roomName.match(/\((\d+)\)/);
         if (capacityMatch) {
             return parseInt(capacityMatch[1]);
         }
         
-        // Fallback to default capacities based on room type
         const type = getRoomType(roomName);
         switch (type) {
             case 'Computer Lab': return 30;
@@ -223,7 +284,6 @@ const Classrooms = () => {
         }
     };
 
-    // Clean room name by removing capacity braces
     const getCleanRoomName = (roomName) => {
         return roomName.replace(/\s*\(\d+\)/, '').trim();
     };
@@ -324,21 +384,29 @@ const Classrooms = () => {
                     {showTimeFilter && (
                         <div className="time-row">
                             <i className="fa fa-clock"></i>
-                            <select 
-                                value={selectedTime} 
-                                onChange={(e) => setSelectedTime(e.target.value)}
-                                className="time-selector"
-                            >
+                            <div className="time-checkboxes">
                                 {allTimeSlots.length > 0 ? (
                                     allTimeSlots.map(time => (
-                                        <option key={time} value={time}>
+                                        <label key={time} style={{ marginRight: '10px' }}>
+                                            <input
+                                                type="checkbox"
+                                                value={time}
+                                                checked={selectedTime.includes(time)}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setSelectedTime(prev => [...prev, time]);
+                                                    } else {
+                                                        setSelectedTime(prev => prev.filter(t => t !== time));
+                                                    }
+                                                }}
+                                            />
                                             {time}
-                                        </option>
+                                        </label>
                                     ))
                                 ) : (
-                                    <option value="">Loading time slots...</option>
+                                    <span>Loading time slots...</span>
                                 )}
-                            </select>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -386,16 +454,12 @@ const Classrooms = () => {
                                         <span>Capacity: {room.capacity}</span>
                                     </div>
                                     <div className="detail-item">
-                                        <i className="fas fa-building"></i>
-                                        <span>{room.floor}</span>
-                                    </div>
-                                    <div className="detail-item">
                                         <i className="fas fa-calendar-day"></i>
                                         <span>{days.find(d => d.key === selectedDay)?.label}</span>
                                     </div>
                                     <div className="detail-item">
                                         <i className="fas fa-clock"></i>
-                                        <span>{selectedTime}</span>
+                                        <span>{(room.freeTimes || []).join(', ')}</span>
                                     </div>
                                 </div>
                             </div>

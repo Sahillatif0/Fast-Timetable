@@ -5,6 +5,7 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
     const [searchTxt, setSearchTxt] = useState('');
     const [addClasses, setAddClasses] = useState(savedClasses);
     const [loading, setLoading] = useState(false);
+    const [showAddedClasses, setShowAddedClasses] = useState(false);
     let allClasses = JSON.parse(localStorage.getItem('allClasses'));
     let withoutDays = [];
     allClasses.forEach(day => {
@@ -49,6 +50,50 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
                 <input type="text" placeholder="e.g. bcs-3a, basit ali, coal" className='add-search-input' value={searchTxt} onKeyDown={handleKeyPress} onChange={(e)=>{setSearchTxt(e.target.value);searchData(e.target.value)}}/>
                 <button className='search-button' onClick={()=>{searchData(searchTxt.trim())}} >Search</button>
             </div>
+            
+            <button 
+                className={`added-classes-toggle ${addClasses.length > 0 ? 'has-items' : ''}`}
+                onClick={() => setShowAddedClasses(!showAddedClasses)}
+            >
+                <i className={`fa ${showAddedClasses ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+                <span>My Classes</span>
+                {addClasses.length > 0 && <span className="added-count-badge">{addClasses.length}</span>}
+            </button>
+            
+            {showAddedClasses && (
+                <div className="added-classes-section">
+                    {addClasses.length > 0 ? (
+                        <div className="added-classes-list">
+                            {addClasses.map((item, index) => (
+                                <div key={item.val || index} className="added-class-tag">
+                                    <span>{item.val}</span>
+                                    <button 
+                                        className="remove-class-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            const newAddClasses = addClasses.filter((_, i) => i !== index);
+                                            setAddClasses(newAddClasses);
+                                            const newClasses = classes.map(c => 
+                                                c.val === item.val ? { ...c, checked: false } : c
+                                            );
+                                            setClasses(newClasses);
+                                        }}
+                                        title="Remove class"
+                                    >
+                                        <i className="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="no-classes-message">
+                            <i className="fa fa-info-circle"></i>
+                            <span>No classes added yet. Select classes from the list below.</span>
+                        </div>
+                    )}
+                </div>
+            )}
+            
             <div className="popup-content">
             {loading && <div className="loader"></div>}
                 {classes.map((each, ind)=>{

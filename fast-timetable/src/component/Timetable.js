@@ -30,6 +30,7 @@ const Timetable = ({loading, setLoading, showNotification}) => {
     let matches = [];
     allClasses.forEach(day=>{
       let dayCl = {sheet: day.sheet, classes: []};
+      console.log(day.sheet);
       day.classes.forEach(classDay => {
           if(showMyRef.current){
             savedClasses.forEach(each=>{
@@ -70,71 +71,75 @@ const Timetable = ({loading, setLoading, showNotification}) => {
     })
     setData(matches);
   }
-  const getAllData = async (sec, onlyMyClasses) => {
+  const getAllData = async (sec, onlyMyClasses, retryCount = 0) => {
+    const MAX_RETRIES = 3;
     setLoading(true);
     let allClasses = [];
     try{
-    const promises = sheetsPageCodes.current.map(async (code) => {
-      let matchesDay = {sheet: code.name, classes: []};
+      const promises = sheetsPageCodes.current.map(async (code) => {
+        let matchesDay = {sheet: code.name, classes: []};
 
-      const response = await fetch(sheetUrl.current + code.gid);
-      const text = await response.text();
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-      const rows = json.table.rows;
-      rows.forEach((row, rowIndex) => {
-        row.c.forEach((cell, colIndex) => {
-          if (cell && cell.v && (rowIndex>2 && colIndex>0)) {
-            const firstCellInRow = rows[rowIndex].c[0]?.v || '';
-            let firstCellInCol = rows[1].c[colIndex]?.v || '';
-            if(cell.v.toLowerCase().includes("lab") && firstCellInCol){
-              firstCellInCol = firstCellInCol.split('-')[0] + '-' + rows[1].c[colIndex+2]?.v.split('-')[1] || ''
+        const response = await fetch(sheetUrl.current + code.gid);
+        const text = await response.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+        rows.forEach((row, rowIndex) => {
+          row.c.forEach((cell, colIndex) => {
+            if (cell && cell.v && (rowIndex>2 && colIndex>0)) {
+              const firstCellInRow = rows[rowIndex].c[0]?.v || '';
+              let firstCellInCol = rows[1].c[colIndex]?.v || '';
+              if(cell.v.toLowerCase().includes("lab") && firstCellInCol){
+                firstCellInCol = firstCellInCol.split('-')[0] + '-' + rows[1].c[colIndex+2]?.v.split('-')[1] || ''
+              }
+              const match = {
+                val: cell.v,
+                location: firstCellInRow,
+                slot: firstCellInCol,
+                time: ''
+              };
+              matchesDay.classes.push(match);
             }
-            const match = {
-              val: cell.v,
-              location: firstCellInRow,
-              slot: firstCellInCol,
-              time: ''
-            };
-            matchesDay.classes.push(match);
-          }
+          });
         });
+
+        return matchesDay;
       });
 
-      return matchesDay;
-    });
-
-    allClasses = await Promise.all(promises);
-    localStorage.setItem('allClasses', JSON.stringify(allClasses));
-    await setAllData(allClasses,sec, onlyMyClasses);
-    setLoading(false);
-  }catch(err){
-    console.log(err);
-    if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
-      console.error('Network error occurred:', err);
-      let allClasses = JSON.parse(localStorage.getItem('allClasses'));
-      if(allClasses){
-        setAllData(allClasses,sec, onlyMyClasses);
-        showNotification('Network error: showing data from previous session', null);
-      }
-      else
-        showNotification('Network error', 'red');
+      allClasses = await Promise.all(promises);
+      localStorage.setItem('allClasses', JSON.stringify(allClasses));
+      await setAllData(allClasses,sec, onlyMyClasses);
       setLoading(false);
-    } else {
-      getAllData(sec, onlyMyClasses);
+    }catch(err){
+      console.log(err);
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        console.error('Network error occurred:', err);
+        let allClasses = JSON.parse(localStorage.getItem('allClasses'));
+        if(allClasses){
+          setAllData(allClasses,sec, onlyMyClasses);
+          showNotification('Network error: showing data from previous session', null);
+        }
+        else
+          showNotification('Network error', 'red');
+        setLoading(false);
+      } else {
+        if (retryCount < MAX_RETRIES) {
+          getAllData(sec, onlyMyClasses, retryCount + 1);
+        } else {
+          showNotification('An error occurred. Please try again later.', 'red');
+          setLoading(false);
+        }
+      }
     }
   }
-
-  
-  
-  
-};
 
 useEffect(() => {
     const fetchSheetData =  async () =>{
       try{
-      const response = await fetch("https://server-timetable2.vercel.app/data");
+      const response = await fetch(process.env.REACT_APP_DATA_API+"/data");
+      console.log(process.env.REACT_APP_DATA_API+"/data")
       const text = await response.text();
       const json = JSON.parse(text);
+      console.log(json)
       sheetUrl.current = json.karachi.url;
       sheetsPageCodes.current = json.karachi.codes;
       localStorage.setItem('url', json.karachi.url);
@@ -235,7 +240,7 @@ useEffect(() => {
             </div>
           </div>
         ):
-      (Filter==='All' ? (data.map((d, index) => (
+      (Filter==='All' && data ? (data.map((d, index) => (
         <>
           <div className="day" key={"dayclasses"+index} >{d.sheet}</div>
           <Classes data={d.classes} />

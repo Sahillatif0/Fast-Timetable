@@ -8,6 +8,8 @@
 # testing
 /coverage
 
+__tests__
+
 # production
 /build
 
