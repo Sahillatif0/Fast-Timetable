@@ -1078,6 +1078,13 @@ a{
     position: relative;
     z-index: 5;
 }
+.three-option-switch .option *{
+    font-size: 14px;
+    white-space: nowrap;
+}
+.three-option-switch .option i{
+    margin-right: 6px;
+}
 .three-option-switch .option-text{
   z-index: 10;
   position: relative;
@@ -1129,6 +1136,7 @@ a{
     font-size: medium;
     font-weight: 600;
     z-index: 2;
+    white-space: nowrap;
 }
 .option i{
     margin-right: 10px;
