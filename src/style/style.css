@@ -4,6 +4,30 @@
     box-sizing: border-box;
     scroll-behavior: smooth;
 }
+
+/* Accessible focus ring for keyboard users */
+:focus-visible {
+    outline: 3px solid rgba(var(--button-color-rgb), 0.6);
+    outline-offset: 2px;
+}
+
+/* Skip link - visually hidden until focused */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    z-index: 10000;
+    padding: 10px 16px;
+    background: var(--button-color);
+    color: white;
+    border-radius: 0 0 8px 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: top 0.2s ease;
+}
+.skip-link:focus {
+    top: 0;
+}
 *::-webkit-scrollbar{
     transition: all 3s ease;
     width: 1px;
@@ -841,7 +865,7 @@ a{
     border-radius: 10px;
     margin: 10px;
     cursor: pointer;
-    transition: all 2s;
+    transition: transform 0.2s ease, background 0.2s ease;
     z-index: 100;
 }
 .download-apk-text{
@@ -857,20 +881,8 @@ a{
   .add-event-text{
     bottom: 105px;
   }
-  @keyframes rotate {
-    0% {
-      transform: rotate(90deg); /* Start off-screen to the right */
-    }
-    50% {
-      transform: rotate(180deg); /* Start off-screen to the right */
-    }
-    100% {
-      transform: rotate(360deg); /* Start off-screen to the right */
-    }
-  }
   .download-apk:hover{
-    scale: 1.2;
-    animation: rotate 0.75s ease-in-out forwards;
+    transform: scale(1.08);
   }
 
   .add-event{
@@ -1684,25 +1696,25 @@ form{
 }
 
 /* Dynamic hover shadows for each card type */
-.contact-card[style*="4CAF50"]:hover {
+.contact-card[data-color="4CAF50"]:hover {
   box-shadow: 
     0 20px 40px rgba(76, 175, 80, 0.15),
     0 8px 16px rgba(76, 175, 80, 0.1);
 }
 
-.contact-card[style*="FF9800"]:hover {
+.contact-card[data-color="FF9800"]:hover {
   box-shadow: 
     0 20px 40px rgba(255, 152, 0, 0.15),
     0 8px 16px rgba(255, 152, 0, 0.1);
 }
 
-.contact-card[style*="2196F3"]:hover {
+.contact-card[data-color="2196F3"]:hover {
   box-shadow: 
     0 20px 40px rgba(33, 150, 243, 0.15),
     0 8px 16px rgba(33, 150, 243, 0.1);
 }
 
-.contact-card[style*="9C27B0"]:hover {
+.contact-card[data-color="9C27B0"]:hover {
   box-shadow: 
     0 20px 40px rgba(156, 39, 176, 0.15),
     0 8px 16px rgba(156, 39, 176, 0.1);
@@ -1766,41 +1778,41 @@ form{
 }
 
 /* Specific hover colors for each card type - Feedback (Green) */
-.contact-card[style*="4CAF50"]:hover .contact-card-title {
+.contact-card[data-color="4CAF50"]:hover .contact-card-title {
   color: #2E7D32;
 }
 
-.contact-card[style*="4CAF50"]:hover .contact-card-description {
+.contact-card[data-color="4CAF50"]:hover .contact-card-description {
   color: #388E3C;
   opacity: 0.9;
 }
 
 /* Ads (Orange) */
-.contact-card[style*="FF9800"]:hover .contact-card-title {
+.contact-card[data-color="FF9800"]:hover .contact-card-title {
   color: #E65100;
 }
 
-.contact-card[style*="FF9800"]:hover .contact-card-description {
+.contact-card[data-color="FF9800"]:hover .contact-card-description {
   color: #F57C00;
   opacity: 0.9;
 }
 
 /* Collaborate (Blue) */
-.contact-card[style*="2196F3"]:hover .contact-card-title {
+.contact-card[data-color="2196F3"]:hover .contact-card-title {
   color: #1565C0;
 }
 
-.contact-card[style*="2196F3"]:hover .contact-card-description {
+.contact-card[data-color="2196F3"]:hover .contact-card-description {
   color: #1976D2;
   opacity: 0.9;
 }
 
 /* Features (Purple) */
-.contact-card[style*="9C27B0"]:hover .contact-card-title {
+.contact-card[data-color="9C27B0"]:hover .contact-card-title {
   color: #7B1FA2;
 }
 
-.contact-card[style*="9C27B0"]:hover .contact-card-description {
+.contact-card[data-color="9C27B0"]:hover .contact-card-description {
   color: #8E24AA;
   opacity: 0.9;
 }
