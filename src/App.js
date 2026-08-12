@@ -121,6 +121,7 @@ function App() {
       <Routes>
         <Route path='/' element={
           <div className="App">
+          <a href="#main-content" className="skip-link">Skip to main content</a>
           {/* Ads from Centralized AdProvider */}
           <AdWrapper 
             showTopBanner={showTopBanner}
@@ -133,6 +134,7 @@ function App() {
           />
           
           <Info/>
+          <main id="main-content">
           <ToggleSwitch activeTab={activeTab} setActiveTab={handleTabSwitch} />
            {activeTab === 'timetable' && <Timetable loading={loading} setLoading={setLoading} showNotification={showNotification}/>}
            {activeTab === 'teachers' && <Suspense fallback={<LoadingFallback />}><Teachers /></Suspense>}
@@ -140,6 +142,7 @@ function App() {
            
 
            <SectionAdCard />
+           </main>
            
            <a href={apk} download='FAST Timetable.apk'>
            {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}>Download APK </div>)}

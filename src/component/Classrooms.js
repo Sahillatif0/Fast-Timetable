@@ -298,8 +298,12 @@ const Classrooms = () => {
             {DAYS.map((day) => (
               <div
                 key={day.key}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedDay === day.key}
                 className={selectedDay === day.key ? 'day-filter-item active' : 'day-filter-item'}
                 onClick={() => setSelectedDay(day.key)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedDay(day.key); } }}
               >
                 {day.label}
               </div>

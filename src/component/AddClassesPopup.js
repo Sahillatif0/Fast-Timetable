@@ -100,37 +100,25 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
             <div className="popup-content">
             {loading && <div className="loader"></div>}
                 {classes.map((each, ind)=>{
-                    return <div key={each.val || ind} className='each-class' onClick={() => {
-                        let newClasses = [...classes];
-                        let newaddClasses = [...addClasses];
-                        if(!newClasses[ind].checked){
-                            newaddClasses.push(each);
-                            setAddClasses(newaddClasses);
-                        }
-                        else{
-                            newaddClasses = newaddClasses.filter((item)=>item.val!==newClasses[ind].val);
-                            setAddClasses(newaddClasses);
-                        }
-                        newClasses[ind].checked = !newClasses[ind].checked;
-                        setClasses(newClasses);
-                      }}>
-                        <input type="checkbox" name={each.key} checked={each.checked || false} onChange={(e) => { 
-                            e.stopPropagation(); 
-                            let newClasses = [...classes]; 
-                            let newaddClasses = [...addClasses]; 
-                            if(e.target.checked){
+                    const checkboxId = `class-check-${each.val || ind}`;
+                    return <label key={each.val || ind} className='each-class' htmlFor={checkboxId}>
+                        <input type="checkbox" id={checkboxId} name={each.key} checked={each.checked || false} onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            let newClasses = [...classes];
+                            let newaddClasses = [...addClasses];
+                            if(isChecked){
                                 newaddClasses.push(each);
                                 setAddClasses(newaddClasses);
                             }
                             else{
                                 newaddClasses = newaddClasses.filter((item)=>item.val!==newClasses[ind].val);
                                 setAddClasses(newaddClasses);
-                            } 
-                            newClasses[ind].checked = e.target.checked; 
+                            }
+                            newClasses[ind].checked = isChecked;
                             setClasses(newClasses);
                         }}/>
-                        <label htmlFor={each.key}>{each.val}</label>
-                    </div>
+                        <span className="each-class-label">{each.val}</span>
+                    </label>
                 })}
             </div>
             <div className="popup-footer">

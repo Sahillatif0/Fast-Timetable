@@ -70,6 +70,7 @@
 .each-class{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     padding: 10px;
     border-bottom: 1px solid var(--button-color);
@@ -81,7 +82,7 @@
     height: 0;
   }
 
-  .each-class label {
+  .each-class-label {
     position: relative;
     padding-left: 30px;
     cursor: pointer;
@@ -91,7 +92,7 @@
     font-weight: bold;
   }
 
-  .each-class label::before {
+  .each-class-label::before {
     content: '';
     position: absolute;
     top: 0;
@@ -101,11 +102,11 @@
     background-color: #ccc;
   }
 
-  .each-class input[type="checkbox"]:checked + label::before {
+  .each-class input[type="checkbox"]:checked + .each-class-label::before {
     background-color: var(--button-color);
   }
 
-  .each-class input[type="checkbox"]:checked + label::after {
+  .each-class input[type="checkbox"]:checked + .each-class-label::after {
     content: '';
     position: absolute;
     left: 6px;

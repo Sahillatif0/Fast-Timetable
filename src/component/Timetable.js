@@ -149,8 +149,12 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
       items.push(
         <div
           key="all"
+          role="button"
+          tabIndex={0}
+          aria-pressed={Filter === 'All'}
           className={Filter === 'All' ? 'day-filter-item active' : 'day-filter-item'}
           onClick={() => setFilter('All')}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter('All'); } }}
         >
           All
         </div>
@@ -160,8 +164,12 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
       items.push(
         <div
           key={'day' + index}
+          role="button"
+          tabIndex={0}
+          aria-pressed={Filter === d.sheet}
           className={Filter === d.sheet ? 'day-filter-item active' : 'day-filter-item'}
           onClick={() => setFilter(d.sheet)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter(d.sheet); } }}
         >
           {d.sheet}
         </div>
@@ -188,7 +196,10 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
         {showMyClasses && (
           <div
             className="empty-action-btn"
+            role="button"
+            tabIndex={0}
             onClick={() => setShowAddClassesPopup(true)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowAddClassesPopup(true); } }}
           >
             <i className="fa fa-plus"></i>
             Add My Classes
@@ -204,7 +215,10 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
             <p>Start by adding your classes to see your personalized timetable</p>
             <div
               className="empty-action-btn"
+              role="button"
+              tabIndex={0}
               onClick={() => setShowAddClassesPopup(true)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowAddClassesPopup(true); } }}
             >
               <i className="fa fa-plus"></i>
               Add Classes
