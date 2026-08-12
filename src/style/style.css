@@ -24,66 +24,49 @@
   }
 body{
     color-scheme: light dark;
-    /* --button-color: #7fac7b; */
-    --background-color: white;
-    /* --background-color:  linear-gradient(55deg, rgba(246,245,255,1) 0%, rgba(209,185,255,1) 38%, rgba(182,139,237,0.9360119047619048) 100%); */
+    --background-color: #ffffff;
     background: var(--background-color);
-    --card-background: #f1f1f1;
+    --card-background: #f4f4f6;
     --text-color: #575555;
     --search-text-color: #575555;
     --heading-color: #1f1e1e;
     --hover-background: #3c358a;
-    --shadow-color: #a5a0a085;
-    --loading-color: black;
-    --loading-color-op: #0000;
-    --form-input-bg: rgb(255, 255, 255);
-    /* --button-color: #ef3f49; */
+    --shadow-color: rgba(83, 73, 190, 0.12);
+    --loading-color: #1f1e1e;
+    --loading-color-op: transparent;
+    --form-input-bg: #ffffff;
     --button-color: #5349be;
-    --button-color-light: #5349be4d;
+    --button-hover: #4339a3;
+    --button-color-light: rgba(83, 73, 190, 0.3);
     --button-color-rgb: 83, 73, 190;
-    /* --button-color: #7d00f9; */
-    /* --timer-bg: #c4c1e0; */
-    /* --timer-bg: #e7d2a5; */
-    --timer-bg: #b9a5e7;
-    /* --timer-color: #9c806b; */
-    /* --timer-color: #9c806b; */
-    --timer-color: #440875;
-    /* --timer-color: #090072; */
-    /* --timer-digit-bg: #a4a0c7; */
-    /* --timer-digit-bg: #f0e4a1; */
-    --timer-digit-bg: #cbb3eb;
-    /* --tags-bg: #c4c1e0; */
-    --tags-bg: #dbdbdb;
-    /* --digit-color: #9c806b; */
-    /* --digit-color: #786b9c; */
-    --digit-color: black;
+    --timer-bg: #efeaff;
+    --timer-color: #5349be;
+    --timer-digit-bg: #e3dbff;
+    --tags-bg: #e6e6e9;
+    --digit-color: #1f1e1e;
+    --text-muted: #8a8a8f;
+    --border-color: #d6d3e3;
 }
 @media (prefers-color-scheme: dark) {
-    *{
-        color: white;
-   }
    body {
-    --background-color: rgb(0,0,0);
-     /* --background-color: linear-gradient(55deg, rgba(2,0,36,1) 0%, rgba(14,2,37,1) 38%, rgba(65,0,78,1) 100%); */
-     --heading-color: #e7e1e1;
-     --text-color: #e7e1e1;
-     --card-background: #272727;
-     --button-color: #358d2de5;
-     --button-color: #ef3f49;
-     --button-color: #bf7fff;
-     --button-color: #f96b6b;
-      --button-color-light: #f96b6b4d;
-     --hover-background: #af4646;
-     --shadow-color: #00000085;
-     --loading-color: #e7e1e1;
-     --form-input-bg: rgb(59, 59, 59);
-     --timer-bg: #1a1a1a;
-   --timer-color: #cccccc;
-   --timer-digit-bg: #333333;
-    --tags-bg: rgba(0,0,0,0.25);
-    --digit-color: color;
-
-     
+    --background-color: #121212;
+    --heading-color: #e7e1e1;
+    --text-color: #cfcfcf;
+    --card-background: #26262b;
+    --button-color: #8b7fe8;
+    --button-hover: #a294f0;
+    --button-color-light: rgba(139, 127, 232, 0.3);
+    --hover-background: #7c71d9;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --loading-color: #e7e1e1;
+    --form-input-bg: #333338;
+    --timer-bg: #2c2c33;
+    --timer-color: #c9c3f2;
+    --timer-digit-bg: #3a3a42;
+    --tags-bg: #333338;
+    --digit-color: #e7e1e1;
+    --text-muted: #9a9aa2;
+    --border-color: #3a3a42;
    }
    .sb-pp{
        background: #f1f1f1 !important;
@@ -2054,6 +2037,84 @@ form{
   }
 }
 
+/* Download Page */
+.download-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+  background: radial-gradient(circle at 30% 20%, rgba(var(--button-color-rgb), 0.18), transparent 60%),
+              var(--background-color);
+  font-family: inherit;
+  padding: 20px;
+}
+
+.download-page-link {
+  text-decoration: none;
+}
+
+.download-page-card {
+  padding: 40px 50px;
+  background: var(--card-background);
+  border: 1px solid rgba(var(--button-color-rgb), 0.2);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px var(--shadow-color), 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  cursor: pointer;
+  min-width: 280px;
+}
+
+.download-page-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px var(--shadow-color), 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.download-page-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--button-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 10px 25px rgba(var(--button-color-rgb), 0.35);
+}
+
+.download-page-icon i {
+  font-size: 32px;
+  color: white;
+}
+
+.download-page-title {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: var(--heading-color);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.download-page-subtitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.download-page-badge {
+  padding: 8px 16px;
+  background: var(--button-color);
+  color: white;
+  border-radius: 25px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  margin-top: 5px;
+}
+
 /* Teachers Section Styles */
 .teachers-container {
     width: 90%;
@@ -3509,7 +3570,7 @@ form{
 }
 
 .classroom-filter-box .filter-toggle-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--button-color);
     color: white;
     border: none;
     padding: 12px 16px;
@@ -3525,9 +3586,9 @@ form{
 }
 
 .classroom-filter-box .filter-toggle-btn:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: var(--button-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .classroom-filter-box .filter-toggle-btn .fa-clock {
@@ -3544,14 +3605,14 @@ form{
     align-items: center;
     margin-top: 15px;
     padding: 15px;
-    background: rgba(102, 126, 234, 0.05);
+    background: rgba(var(--button-color-rgb), 0.05);
     border-radius: 10px;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid var(--button-color);
     animation: filterSlideDown 0.3s ease-out;
 }
 
 .classroom-filter-box .time-row .fa-clock {
-    color: #667eea;
+    color: var(--button-color);
     margin-right: 12px;
     font-size: 16px;
 }
@@ -3559,18 +3620,18 @@ form{
 .classroom-filter-box .time-selector {
     flex: 1;
     padding: 10px 15px;
-    border: 2px solid #e1e5e9;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 14px;
-    background: white;
-    color: #333;
+    background: var(--form-input-bg);
+    color: var(--text-color);
     transition: all 0.3s ease;
 }
 
 .classroom-filter-box .time-selector:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--button-color);
+    box-shadow: 0 0 0 3px rgba(var(--button-color-rgb), 0.1);
 }
 
 .classroom-filter-box .time-checkboxes {
@@ -3585,9 +3646,9 @@ form{
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: #333;
-    background: #fff;
-    border: 1px solid #e1e5e9;
+    color: var(--text-color);
+    background: var(--form-input-bg);
+    border: 1px solid var(--border-color);
     border-radius: 999px;
     padding: 4px 10px;
     cursor: pointer;
@@ -3599,19 +3660,19 @@ form{
     width: 12px;
     height: 12px;
     margin: 0;
-    accent-color: #667eea;
+    accent-color: var(--button-color);
 }
 
 .classroom-filter-box .time-checkboxes label:hover {
-    border-color: #667eea;
-    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
+    border-color: var(--button-color);
+    box-shadow: 0 2px 6px rgba(var(--button-color-rgb), 0.15);
 }
 
 .classroom-filter-box .time-checkboxes input[type="checkbox"]:checked + span,
 .classroom-filter-box .time-checkboxes label:has(input[type="checkbox"]:checked) {
-    background: rgba(102, 126, 234, 0.08);
-    border-color: #667eea;
-    color: #3a4bdc;
+    background: rgba(var(--button-color-rgb), 0.08);
+    border-color: var(--button-color);
+    color: var(--button-color);
 }
 
 @keyframes filterSlideDown {

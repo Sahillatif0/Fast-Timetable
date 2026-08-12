@@ -69,14 +69,14 @@
     width: 55px;
     height: 55px;
     border-radius: 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--button-color);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 18px;
     box-shadow: 
-        0 10px 25px rgba(102, 126, 234, 0.35),
-        0 4px 12px rgba(102, 126, 234, 0.2);
+        0 10px 25px rgba(var(--button-color-rgb), 0.35),
+        0 4px 12px rgba(var(--button-color-rgb), 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -115,7 +115,7 @@
     color: var(--heading-color);
     font-size: 22px;
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--button-color), var(--button-hover));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -123,13 +123,13 @@
 
 .version-badge {
     display: inline-block;
-    background: rgba(102, 126, 234, 0.12);
+    background: rgba(var(--button-color-rgb), 0.12);
     color: var(--button-color);
     padding: 6px 12px;
     border-radius: 15px;
     font-size: 12px;
     font-weight: 600;
-    border: 1px solid rgba(102, 126, 234, 0.25);
+    border: 1px solid rgba(var(--button-color-rgb), 0.25);
 }
 
 .close-btn {
@@ -284,9 +284,9 @@
 }
 
 .got-it-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--button-color);
     color: white;
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+    box-shadow: 0 6px 20px rgba(var(--button-color-rgb), 0.35);
     position: relative;
     overflow: hidden;
 }
@@ -307,7 +307,7 @@
 }
 
 .got-it-btn:hover {
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.45);
+    box-shadow: 0 8px 25px rgba(var(--button-color-rgb), 0.45);
     transform: translateY(-3px);
 }
 
@@ -409,7 +409,7 @@
     }
     
     .update-notification-header {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.03));
+        background: linear-gradient(135deg, rgba(var(--button-color-rgb), 0.08), rgba(var(--button-color-rgb), 0.03));
     }
     
     .close-btn {
