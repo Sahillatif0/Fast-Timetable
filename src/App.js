@@ -1,7 +1,7 @@
 import './App.css';
 import './style/style.css';
 import './style/notification.css';
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Notification from './component/Notification';
 import html_parse from 'html-react-parser';
@@ -42,8 +42,8 @@ const SectionAdCard = () => {
 function App() {
   const [loading, setLoading] = useState(false);
   const [showDownload, setShowDownload] = useState(true);
-  const [NotificationVar, setNotification] = useState(null); // eslint-disable-next-line 
-  const [versionCode] = useState(APP_INFO.VERSION_CODE); 
+  const [notification, setNotification] = useState(null); // { message, color } instead of a React element
+  const versionCode = APP_INFO.VERSION_CODE;
   const [showUpdate, setShowUpdate] = useState(false);
   const [apkLink, setApkLink] = useState('');
 
@@ -61,60 +61,59 @@ function App() {
   });
   const tabSwitchCount = useRef(0);
 
-  const fetchedData = useRef(false);
   const [adsComponent, setAdsComponent] = useState(null);
 
-  const showNotification = (message, color)=>{
-    setNotification(<Notification message={message} background={color} setNotification={setNotification}/>)
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  }
+  const showNotification = useCallback((message, color) => {
+    setNotification({ message, color });
+  }, []);
 
-  const handleTabSwitch = (newTab) => {
-    if (newTab !== activeTab) {
-      tabSwitchCount.current++;
-      
-      if (tabSwitchCount.current % 3 === 0) {
-        setShowInterstitial(true);
+  const handleTabSwitch = useCallback((newTab) => {
+    setActiveTab((prev) => {
+      if (newTab !== prev) {
+        tabSwitchCount.current++;
+        if (tabSwitchCount.current % 3 === 0) {
+          setShowInterstitial(true);
+        }
       }
-      
-      setActiveTab(newTab);
-    }
-  };
-  
-useEffect(() => {
-  setTimeout(() => {
-      setShowDownload(false)
-    }, 3000);
-    const fetchSheetData =  async () =>{
-      try{
-      const response = await fetch(process.env.REACT_APP_DATA_API + "/data");
-      const text = await response.text();
-      const json = JSON.parse(text);
-      if(json.versionCode>versionCode){
-        setShowUpdate(true);
-        localStorage.setItem('vcode', 'true');
-      }
-      else localStorage.setItem('vcode', 'false');
-      setApkLink(json.apklink);
-      const sanitizedHtml = json.component ? DOMPurify.sanitize(json.component) : null;
-      setAdsComponent(sanitizedHtml ? html_parse(sanitizedHtml) : null);
-      localStorage.setItem('apk', json.apklink);
-    }
-    catch(err){
+      return newTab;
+    });
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowDownload(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchSheetData = async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_DATA_API + '/data');
+        const json = await response.json();
+        if (cancelled) return;
+        if (json.versionCode > versionCode) {
+          setShowUpdate(true);
+          localStorage.setItem('vcode', 'true');
+        } else {
+          localStorage.setItem('vcode', 'false');
+        }
+        setApkLink(json.apklink);
+        const sanitizedHtml = json.component ? DOMPurify.sanitize(json.component) : null;
+        setAdsComponent(sanitizedHtml ? html_parse(sanitizedHtml) : null);
+        localStorage.setItem('apk', json.apklink);
+      } catch (err) {
         logger.error('Failed to fetch sheet data:', err);
-        setShowUpdate('true'===localStorage.getItem('vcode'));
+        setShowUpdate('true' === localStorage.getItem('vcode'));
       }
-    }
-    const fun = async ()=>{
-      await fetchSheetData();
-      fetchedData.current = true;
-    }
-    
-    fun();
-  }, [apkLink, showUpdate, versionCode])
-  
+    };
+    fetchSheetData();
+    return () => { cancelled = true; };
+    // Run once on mount only - the old deps caused an infinite refetch loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleDownloadDismiss = useCallback((val) => setShowDownload(val), []);
+
   return (
     <AuthProvider>
     <AdProvider>
@@ -143,16 +142,18 @@ useEffect(() => {
            <SectionAdCard />
            
            <a href={apk} download='FAST Timetable.apk'>
-           {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}>Download APK </div>)}
-           <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{setShowDownload(true)}} onMouseEnter={()=>{setShowDownload(true)}} onMouseLeave={()=>{setShowDownload(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
+           {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}>Download APK </div>)}
+           <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
            </a>
-     
-           {NotificationVar}
+      
+           {notification && (
+             <Notification message={notification.message} background={notification.color} setNotification={() => setNotification(null)}/>
+           )}
            <ContactSection />
            {adsComponent}
            
            <UpdateNotification />
-     
+      
            {showUpdate && <CheckUpdate apkLink={apkLink}/>}
            <RightsReserved/>
          </div>
