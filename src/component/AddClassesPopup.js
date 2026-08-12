@@ -1,27 +1,30 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import '../style/popup.css'
+
+const safeParse = (value, fallback) => {
+  if (value == null) return fallback;
+  try { return JSON.parse(value) ?? fallback; } catch { return fallback; }
+};
 
 const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses, getData, showNotification}) => {
     const [searchTxt, setSearchTxt] = useState('');
     const [addClasses, setAddClasses] = useState(savedClasses);
     const [loading, setLoading] = useState(false);
     const [showAddedClasses, setShowAddedClasses] = useState(false);
-    let allClasses = JSON.parse(localStorage.getItem('allClasses'));
-    let withoutDays = [];
-    allClasses.forEach(day => {
-        withoutDays = withoutDays.concat(day.classes);
-    });
-    withoutDays = withoutDays.reduce((accumulator, current) => {
-        if (!accumulator.some(item => item.val === current.val)) {
-            addClasses.forEach(each=>{
-                if(each.val===current.val)
-                    current.checked = true
-            })
-          accumulator.push(current);
-        }
-        return accumulator;
-      }, []);
-    // console.log(withoutDays);
+    const allClasses = safeParse(localStorage.getItem('allClasses'), []);
+    const withoutDays = useMemo(() => {
+        const seen = new Set();
+        const flat = [];
+        allClasses.forEach(day => {
+            (day.classes || []).forEach(cl => {
+                if (!seen.has(cl.val)) {
+                    seen.add(cl.val);
+                    flat.push({ ...cl, checked: addClasses.some(each => each.val === cl.val) });
+                }
+            });
+        });
+        return flat;
+    }, [allClasses, addClasses]);
     let [classes, setClasses] = useState(withoutDays);
     const searchData = (searching)=>{
         setLoading(true)
