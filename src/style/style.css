@@ -50,12 +50,12 @@ body{
     color-scheme: light dark;
     --background-color: #ffffff;
     background: var(--background-color);
-    --card-background: #f4f4f6;
+    --card-background: #f1f1f1;
     --text-color: #575555;
     --search-text-color: #575555;
     --heading-color: #1f1e1e;
     --hover-background: #3c358a;
-    --shadow-color: rgba(83, 73, 190, 0.12);
+    --shadow-color: #a5a0a085;
     --loading-color: #1f1e1e;
     --loading-color-op: transparent;
     --form-input-bg: #ffffff;
@@ -63,10 +63,10 @@ body{
     --button-hover: #4339a3;
     --button-color-light: rgba(83, 73, 190, 0.3);
     --button-color-rgb: 83, 73, 190;
-    --timer-bg: #efeaff;
-    --timer-color: #5349be;
-    --timer-digit-bg: #e3dbff;
-    --tags-bg: #e6e6e9;
+    --timer-bg: #b9a5e7;
+    --timer-color: #440875;
+    --timer-digit-bg: #cbb3eb;
+    --tags-bg: #dbdbdb;
     --digit-color: #1f1e1e;
     --text-muted: #8a8a8f;
     --border-color: #d6d3e3;
@@ -76,18 +76,18 @@ body{
     --background-color: #121212;
     --heading-color: #e7e1e1;
     --text-color: #cfcfcf;
-    --card-background: #26262b;
+    --card-background: #272727;
     --button-color: #8b7fe8;
     --button-hover: #a294f0;
     --button-color-light: rgba(139, 127, 232, 0.3);
     --hover-background: #7c71d9;
-    --shadow-color: rgba(0, 0, 0, 0.5);
+    --shadow-color: #00000085;
     --loading-color: #e7e1e1;
     --form-input-bg: #333338;
-    --timer-bg: #2c2c33;
-    --timer-color: #c9c3f2;
-    --timer-digit-bg: #3a3a42;
-    --tags-bg: #333338;
+    --timer-bg: #1a1a1a;
+    --timer-color: #cccccc;
+    --timer-digit-bg: #333333;
+    --tags-bg: rgba(0, 0, 0, 0.25);
     --digit-color: #e7e1e1;
     --text-muted: #9a9aa2;
     --border-color: #3a3a42;
@@ -1696,25 +1696,26 @@ form{
 }
 
 /* Dynamic hover shadows for each card type */
-.contact-card[data-color="4CAF50"]:hover {
+/* NOTE: data-color carries the '#' prefix (e.g. "#4CAF50") */
+.contact-card[data-color="#4CAF50"]:hover {
   box-shadow: 
     0 20px 40px rgba(76, 175, 80, 0.15),
     0 8px 16px rgba(76, 175, 80, 0.1);
 }
 
-.contact-card[data-color="FF9800"]:hover {
+.contact-card[data-color="#FF9800"]:hover {
   box-shadow: 
     0 20px 40px rgba(255, 152, 0, 0.15),
     0 8px 16px rgba(255, 152, 0, 0.1);
 }
 
-.contact-card[data-color="2196F3"]:hover {
+.contact-card[data-color="#2196F3"]:hover {
   box-shadow: 
     0 20px 40px rgba(33, 150, 243, 0.15),
     0 8px 16px rgba(33, 150, 243, 0.1);
 }
 
-.contact-card[data-color="9C27B0"]:hover {
+.contact-card[data-color="#9C27B0"]:hover {
   box-shadow: 
     0 20px 40px rgba(156, 39, 176, 0.15),
     0 8px 16px rgba(156, 39, 176, 0.1);
@@ -1778,41 +1779,41 @@ form{
 }
 
 /* Specific hover colors for each card type - Feedback (Green) */
-.contact-card[data-color="4CAF50"]:hover .contact-card-title {
+.contact-card[data-color="#4CAF50"]:hover .contact-card-title {
   color: #2E7D32;
 }
 
-.contact-card[data-color="4CAF50"]:hover .contact-card-description {
+.contact-card[data-color="#4CAF50"]:hover .contact-card-description {
   color: #388E3C;
   opacity: 0.9;
 }
 
 /* Ads (Orange) */
-.contact-card[data-color="FF9800"]:hover .contact-card-title {
+.contact-card[data-color="#FF9800"]:hover .contact-card-title {
   color: #E65100;
 }
 
-.contact-card[data-color="FF9800"]:hover .contact-card-description {
+.contact-card[data-color="#FF9800"]:hover .contact-card-description {
   color: #F57C00;
   opacity: 0.9;
 }
 
 /* Collaborate (Blue) */
-.contact-card[data-color="2196F3"]:hover .contact-card-title {
+.contact-card[data-color="#2196F3"]:hover .contact-card-title {
   color: #1565C0;
 }
 
-.contact-card[data-color="2196F3"]:hover .contact-card-description {
+.contact-card[data-color="#2196F3"]:hover .contact-card-description {
   color: #1976D2;
   opacity: 0.9;
 }
 
 /* Features (Purple) */
-.contact-card[data-color="9C27B0"]:hover .contact-card-title {
+.contact-card[data-color="#9C27B0"]:hover .contact-card-title {
   color: #7B1FA2;
 }
 
-.contact-card[data-color="9C27B0"]:hover .contact-card-description {
+.contact-card[data-color="#9C27B0"]:hover .contact-card-description {
   color: #8E24AA;
   opacity: 0.9;
 }
