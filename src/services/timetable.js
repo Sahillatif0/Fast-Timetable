@@ -96,6 +96,7 @@ export const sortByTime = (classes) =>
   });
 
 const CACHE_KEY = 'allClasses';
+const SAVED_CLASSES_KEY = 'savedClasses';
 
 export const loadCachedClasses = () => safeParse(localStorage.getItem(CACHE_KEY), []);
 
@@ -106,3 +107,5 @@ export const saveCachedClasses = (daySheets) => {
     // Storage full or unavailable - non-fatal
   }
 };
+
+export const loadSavedClasses = () => safeParse(localStorage.getItem(SAVED_CLASSES_KEY), []);

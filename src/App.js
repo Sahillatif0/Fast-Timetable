@@ -1,7 +1,7 @@
 import './App.css';
 import './style/style.css';
 import './style/notification.css';
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Notification from './component/Notification';
 import html_parse from 'html-react-parser';

@@ -7,7 +7,9 @@ import {
   fetchSheetConfig,
   fetchAllDaySheets,
   loadCachedClasses,
+  loadSavedClasses,
   saveCachedClasses,
+  safeParse,
   sortByTime,
 } from '../services/timetable';
 
@@ -16,7 +18,7 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
   const currentDay = WEEKDAYS[new Date().getDay()];
 
   const [data, setData] = useState([]);
-  const [savedClasses, setSavedClasses] = useState(() => loadCachedClasses());
+  const [savedClasses, setSavedClasses] = useState(() => loadSavedClasses());
   const [Filter, setFilter] = useState(currentDay || 'All');
   const [showMyClasses, setShowMyClasses] = useState(true);
   const [showAddClassesPopup, setShowAddClassesPopup] = useState(false);
@@ -85,6 +87,15 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
     }
   }, [buildView, setLoading, showNotification]);
 
+  // Apply cached day-sheets when the config fetch itself failed.
+  const applyFromCache = useCallback((cached) => {
+    const seq = ++fetchSeq.current;
+    if (!mounted.current) return;
+    setData(buildView(cached, '', true));
+    setLoading(false);
+    showNotification('Network error: showing data from previous session', null);
+  }, [buildView, setLoading, showNotification]);
+
   // Load sheet config once.
   useEffect(() => {
     let cancelled = false;
@@ -98,13 +109,25 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
         localStorage.setItem('cod', JSON.stringify(json.karachi.codes));
       } catch {
         sheetUrl.current = localStorage.getItem('url');
-        sheetsPageCodes.current = JSON.parse(localStorage.getItem('cod') || '[]');
+        sheetsPageCodes.current = safeParse(localStorage.getItem('cod'), []);
       }
       configLoaded.current = true;
-      if (!cancelled) getAllData('', true);
+      if (!cancelled) {
+        if (!sheetUrl.current || sheetsPageCodes.current.length === 0) {
+          const cached = loadCachedClasses();
+          if (cached.length > 0) {
+            applyFromCache(cached);
+          } else {
+            showNotification('Network error', 'red');
+            setLoading(false);
+          }
+        } else {
+          getAllData('', true);
+        }
+      }
     })();
     return () => { cancelled = true; };
-  }, [getAllData]);
+  }, [getAllData, loadCachedClasses, setLoading, showNotification]);
 
   // Pull-to-refresh handlers.
   const handleTouchStart = (event) => {

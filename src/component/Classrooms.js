@@ -99,10 +99,17 @@ const Classrooms = () => {
   );
   const [searchText, setSearchText] = useState('');
   const [showTimeFilter, setShowTimeFilter] = useState(false);
+  const [configReady, setConfigReady] = useState(false);
 
   const sheetUrl = useRef('');
   const sheetsPageCodes = useRef([]);
-  const configLoaded = useRef(false);
+  const mounted = useRef(true);
+  const fetchSeq = useRef(0);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   // Persist selections
   useEffect(() => {
@@ -134,22 +141,35 @@ const Classrooms = () => {
         sheetUrl.current = localStorage.getItem('url');
         sheetsPageCodes.current = safeParse(localStorage.getItem('cod'), []);
       }
-      configLoaded.current = true;
+      if (!cancelled) setConfigReady(true);
     })();
     return () => { cancelled = true; };
   }, []);
 
   const findFreeRooms = useCallback(async (forceRefresh = false) => {
-    if (!configLoaded.current) return;
+    if (!configReady) return;
+
+    const seq = ++fetchSeq.current;
+    const apply = (rooms) => {
+      if (!mounted.current || seq !== fetchSeq.current) return;
+      setFreeRooms(rooms);
+      setFilteredRooms(rooms);
+      setLoading(false);
+    };
 
     const cacheKey = `classrooms_data_${selectedDay}_${selectedTime.join('_')}`;
     const readCache = () => {
       const cachedData = localStorage.getItem(cacheKey);
       const cacheTimestamp = localStorage.getItem(`${cacheKey}_timestamp`);
       if (!forceRefresh && cachedData && cacheTimestamp) {
-        return Date.now() - parseInt(cacheTimestamp, 10) < CACHE_DURATION
-          ? safeParse(cachedData, null)
-          : null;
+        const parsed = safeParse(cachedData, null);
+        // Never serve or cache empty results - a transient failure must
+        // not mask a genuinely free room for 5 minutes.
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return Date.now() - parseInt(cacheTimestamp, 10) < CACHE_DURATION
+            ? parsed
+            : null;
+        }
       }
       return null;
     };
@@ -157,9 +177,7 @@ const Classrooms = () => {
     setLoading(true);
     const cached = readCache();
     if (cached) {
-      setFreeRooms(cached);
-      setFilteredRooms(cached);
-      setLoading(false);
+      apply(cached);
       return;
     }
 
@@ -169,9 +187,7 @@ const Classrooms = () => {
     );
 
     if (!daySheet) {
-      setFreeRooms([]);
-      setFilteredRooms([]);
-      setLoading(false);
+      apply([]);
       return;
     }
 
@@ -192,9 +208,7 @@ const Classrooms = () => {
       // If the persisted selection doesn't exist in this sheet, fall back.
       const validSelections = selectedTime.filter((t) => timeSlots.includes(t));
       if (validSelections.length === 0) {
-        setFreeRooms([]);
-        setFilteredRooms([]);
-        setLoading(false);
+        apply([]);
         return;
       }
       const timeColumnIndices = validSelections.map((selTime) =>
@@ -247,27 +261,26 @@ const Classrooms = () => {
         }
       });
 
-      setFreeRooms(freeRoomsList);
-      setFilteredRooms(freeRoomsList);
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify(freeRoomsList));
-        localStorage.setItem(`${cacheKey}_timestamp`, Date.now().toString());
-      } catch { /* storage full - non-fatal */ }
+      apply(freeRoomsList);
+      if (freeRoomsList.length > 0) {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(freeRoomsList));
+          localStorage.setItem(`${cacheKey}_timestamp`, Date.now().toString());
+        } catch { /* storage full - non-fatal */ }
+      }
     } catch (err) {
       console.error('Error fetching room data:', err);
       // Fall back to any cached copy (ignore expiry) on failure.
-      const stale = safeParse(localStorage.getItem(cacheKey), []);
-      setFreeRooms(stale);
-      setFilteredRooms(stale);
+      apply(safeParse(localStorage.getItem(cacheKey), []));
     }
-    setLoading(false);
-  }, [selectedDay, selectedTime]);
+  }, [selectedDay, selectedTime, configReady]);
 
-  // Initial fetch once config is ready.
+  // Trigger a fetch once config is ready and whenever the selection changes.
   useEffect(() => {
-    if (!configLoaded.current) return;
-    findFreeRooms();
-  }, [findFreeRooms]);
+    if (configReady) {
+      findFreeRooms();
+    }
+  }, [configReady, findFreeRooms]);
 
   // Search filter
   const handleSearch = useCallback((searchValue) => {
