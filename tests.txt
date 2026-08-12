@@ -1,0 +1,12 @@
+FAIL src/__tests__/environment.test.js
+FAIL src/__tests__/AdTracker.test.js
+FAIL src/__tests__/Classes.test.js
+FAIL src/__tests__/Notification.test.js (5.434 s)
+PASS src/__tests__/ToggleMyClasses.test.js
+PASS src/__tests__/Search.test.js
+PASS src/__tests__/api.test.js
+FAIL src/__tests__/UpdateNotification.test.js
+FAIL src/__tests__/Teachers.test.js (7.157 s)
+FAIL src/__tests__/Classrooms.test.js (7.194 s)
+FAIL src/__tests__/App.test.js
+FAIL src/__tests__/Timetable.test.js (7.778 s)

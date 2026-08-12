@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(set:*)",
+      "Shell(npx react-scripts test --watchAll=false 2 >& 1)",
+      "Shell(grep:*)",
+      "Shell(set CI=true && npx react-scripts test --watchAll=false 2>&1 | findstr /C:\"PASS\" /C:\"FAIL\" > tests.txt & type tests.txt)",
+      "Shell(findstr:*)",
+      "Shell(git add -A && git commit -F - <<'EOF' Add shared timetable service to centralize sheet fetching and parsing The same Google Sheets JSONP fetching, fragile substr(47) parsing and caching logic was copy-pasted across App, Timetable and Classrooms. Extract it into src/services/timetable.js with a robust JSONP wrapper stripper, a safe localStorage parse helper and normalized sortable times. Co-authored-by: CommandCodeBot <noreply@commandcode.ai> EOF)",
+      "Shell(git:*)",
+      "Shell(del:*)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

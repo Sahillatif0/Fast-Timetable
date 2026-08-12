@@ -1,0 +1,8 @@
+Add shared timetable service to centralize sheet fetching and parsing
+
+The same Google Sheets JSONP fetching, fragile substr(47) parsing and
+caching logic was copy-pasted across App, Timetable and Classrooms.
+Extract it into src/services/timetable.js with a robust JSONP wrapper
+stripper, a safe localStorage parse helper and normalized sortable times.
+
+Co-authored-by: CommandCodeBot <noreply@commandcode.ai>
