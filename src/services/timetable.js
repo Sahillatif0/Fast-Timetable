@@ -10,11 +10,11 @@ export const DEFAULT_SHEET_URL =
   'https://docs.google.com/spreadsheets/d/1A1p89c0EsncL7GHHaAZOP5YdWnEVLFvMuBGjAQJSLo0/gviz/tq?tqx=out:json&gid=';
 
 export const DEFAULT_SHEET_CODES = [
-  { name: 'MONDAY', gid: '696071600' },
-  { name: 'TUESDAY', gid: '1510874776' },
-  { name: 'WEDNESDAY', gid: '834541199' },
-  { name: 'THURSDAY', gid: '168974244' },
-  { name: 'FRIDAY', gid: '1080238006' },
+  { name: 'MONDAY', gid: '1381330037' },
+  { name: 'TUESDAY', gid: '1945943698' },
+  { name: 'WEDNESDAY', gid: '1092976236' },
+  { name: 'THURSDAY', gid: '1949876201' },
+  { name: 'FRIDAY', gid: '799622896' },
   { name: 'SATURDAY', gid: '985885879' },
 ];
 

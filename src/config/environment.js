@@ -20,7 +20,7 @@ export const FEATURES = {
 
 // App version and metadata
 export const APP_INFO = {
-  VERSION_CODE: 13,
+  VERSION_CODE: 14,
   VERSION_NAME: '3.1.0',
   APP_NAME: 'FAST Timetable',
 };

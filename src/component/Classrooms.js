@@ -14,6 +14,7 @@ const DAYS = [
   { key: 3, label: 'Wednesday' },
   { key: 4, label: 'Thursday' },
   { key: 5, label: 'Friday' },
+  { key: 6, label: 'Saturday' },
 ];
 
 const STORAGE_KEYS = {
@@ -209,13 +210,15 @@ const Classrooms = () => {
       }
       setAllTimeSlots(timeSlots);
 
-      // If the persisted selection doesn't exist in this sheet, fall back.
+      // If the persisted selection doesn't exist in this sheet, fall back
+      // to the first available slot so the view is never empty on load.
       const validSelections = selectedTime.filter((t) => timeSlots.includes(t));
-      if (validSelections.length === 0) {
+      const chosenSelections = validSelections.length > 0 ? validSelections : (timeSlots[0] ? [timeSlots[0]] : []);
+      if (chosenSelections.length === 0) {
         apply([]);
         return;
       }
-      const timeColumnIndices = validSelections.map((selTime) =>
+      const timeColumnIndices = chosenSelections.map((selTime) =>
         rows[1].c.findIndex((cell, index) => cell && cell.v === selTime && index > 0)
       );
 
@@ -249,7 +252,7 @@ const Classrooms = () => {
           const cell = row.c[timeColumnIndex];
           const hasRegularClass = cell && cell.v && cell.v.trim() !== '' && !cell.v.toLowerCase().includes('lab');
           if (!occupiedSlots.has(`${rowIndex}-${timeColumnIndex}`) && !hasRegularClass) {
-            freeTimes.push(validSelections[t]);
+            freeTimes.push(chosenSelections[t]);
           }
         }
         if (freeTimes.length > 0) {
