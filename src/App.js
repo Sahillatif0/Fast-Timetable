@@ -16,6 +16,7 @@ import UpdateNotification from './component/UpdateNotification';
 import { AdProvider, useAds, AdCard, AuthProvider, ProtectedRoute } from './component/ads';
 import AdWrapper from './component/ads/AdWrapper';
 import { APP_INFO, logger } from './config/environment';
+import { SHEET_CONFIG_URL } from './services/timetable';
 
 // Lazy-loaded components
 const AdAdmin = lazy(() => import('./component/ads/AdAdmin'));
@@ -88,7 +89,7 @@ function App() {
     let cancelled = false;
     const fetchSheetData = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_DATA_API + '/data');
+        const response = await fetch(SHEET_CONFIG_URL);
         const json = await response.json();
         if (cancelled) return;
         if (json.versionCode > versionCode) {
@@ -144,7 +145,7 @@ function App() {
            
            <a href={apk} download='FAST Timetable.apk'>
            {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}>Download APK </div>)}
-           <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px'}}></i></div>
+           <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px', color: 'white'}}></i></div>
            </a>
       
            {notification && (

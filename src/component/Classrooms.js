@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { parseSheetJson } from '../services/timetable';
+import {
+  parseSheetJson,
+  fetchSheetConfig,
+  DEFAULT_SHEET_URL,
+  DEFAULT_SHEET_CODES,
+} from '../services/timetable';
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -101,8 +106,8 @@ const Classrooms = () => {
   const [showTimeFilter, setShowTimeFilter] = useState(false);
   const [configReady, setConfigReady] = useState(false);
 
-  const sheetUrl = useRef('');
-  const sheetsPageCodes = useRef([]);
+  const sheetUrl = useRef(DEFAULT_SHEET_URL);
+  const sheetsPageCodes = useRef(DEFAULT_SHEET_CODES);
   const mounted = useRef(true);
   const fetchSeq = useRef(0);
 
@@ -129,17 +134,16 @@ const Classrooms = () => {
     let cancelled = false;
     (async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_DATA_API + '/data');
-        const json = await response.json();
+        const json = await fetchSheetConfig();
         if (cancelled) return;
-        sheetUrl.current = json.karachi.url;
-        sheetsPageCodes.current = json.karachi.codes;
-        localStorage.setItem('url', json.karachi.url);
-        localStorage.setItem('cod', JSON.stringify(json.karachi.codes));
+        sheetUrl.current = json.url || DEFAULT_SHEET_URL;
+        sheetsPageCodes.current = json.codes.length > 0 ? json.codes : DEFAULT_SHEET_CODES;
+        localStorage.setItem('url', sheetUrl.current);
+        localStorage.setItem('cod', JSON.stringify(sheetsPageCodes.current));
       } catch (err) {
         console.log(err);
-        sheetUrl.current = localStorage.getItem('url');
-        sheetsPageCodes.current = safeParse(localStorage.getItem('cod'), []);
+        sheetUrl.current = localStorage.getItem('url') || DEFAULT_SHEET_URL;
+        sheetsPageCodes.current = safeParse(localStorage.getItem('cod'), DEFAULT_SHEET_CODES);
       }
       if (!cancelled) setConfigReady(true);
     })();

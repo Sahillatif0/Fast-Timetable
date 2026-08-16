@@ -4,7 +4,31 @@
  * timetable payloads used by App, Timetable and Classrooms.
  */
 
-const DATA_API = process.env.REACT_APP_DATA_API;
+export const SHEET_CONFIG_URL = 'https://sahillatif0.github.io/mnoprs/abc.json';
+
+export const DEFAULT_SHEET_URL =
+  'https://docs.google.com/spreadsheets/d/1A1p89c0EsncL7GHHaAZOP5YdWnEVLFvMuBGjAQJSLo0/gviz/tq?tqx=out:json&gid=';
+
+export const DEFAULT_SHEET_CODES = [
+  { name: 'MONDAY', gid: '696071600' },
+  { name: 'TUESDAY', gid: '1510874776' },
+  { name: 'WEDNESDAY', gid: '834541199' },
+  { name: 'THURSDAY', gid: '168974244' },
+  { name: 'FRIDAY', gid: '1080238006' },
+  { name: 'SATURDAY', gid: '985885879' },
+];
+
+/**
+ * The config JSON can carry codes as an array of {name, gid} or an object
+ * mapping {MONDAY: gid}. Normalize both to the array shape used downstream.
+ */
+export const normalizeSheetCodes = (codes) => {
+  if (Array.isArray(codes)) return codes;
+  if (codes && typeof codes === 'object') {
+    return Object.entries(codes).map(([name, gid]) => ({ name, gid: String(gid) }));
+  }
+  return [];
+};
 
 // Google Sheets JSONP responses are wrapped as `/*O_o*/\n<json>*/`.
 // Strip the prefix/suffix instead of relying on magic offsets.
@@ -35,10 +59,14 @@ export const safeParse = (value, fallback) => {
 };
 
 export const fetchSheetConfig = async () => {
-  const res = await fetch(`${DATA_API}/data`);
+  const res = await fetch(SHEET_CONFIG_URL);
   const json = await res.json();
   if (!json.karachi) throw new Error('Missing karachi config in data response');
-  return json;
+  const codes = normalizeSheetCodes(json.karachi.codes);
+  return {
+    url: json.karachi.url || DEFAULT_SHEET_URL,
+    codes: codes.length > 0 ? codes : DEFAULT_SHEET_CODES,
+  };
 };
 
 /**

@@ -11,15 +11,24 @@ import {
   saveCachedClasses,
   safeParse,
   sortByTime,
+  DEFAULT_SHEET_URL,
+  DEFAULT_SHEET_CODES,
 } from '../services/timetable';
 
-const Timetable = ({ loading, setLoading, showNotification }) => {
-  const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const currentDay = WEEKDAYS[new Date().getDay()];
+const CLASS_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+const getEffectiveDay = () => {
+  const now = new Date();
+  const day = now.getDay();
+  if (day === 0) return CLASS_DAYS[0]; // Sunday -> next class day is Monday
+  const todayIndex = day - 1; // Monday=0 ... Saturday=5
+  return CLASS_DAYS[now.getHours() >= 16 ? (todayIndex + 1) % CLASS_DAYS.length : todayIndex];
+};
+
+const Timetable = ({ loading, setLoading, showNotification }) => {
   const [data, setData] = useState([]);
   const [savedClasses, setSavedClasses] = useState(() => loadSavedClasses());
-  const [Filter, setFilter] = useState(currentDay || 'All');
+  const [Filter, setFilter] = useState(() => getEffectiveDay());
   const [showMyClasses, setShowMyClasses] = useState(true);
   const [showAddClassesPopup, setShowAddClassesPopup] = useState(false);
   const [searchTxt, setSearchTxt] = useState('');
@@ -28,8 +37,8 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
   const [isPulled, setIsPulled] = useState(false);
 
   const showMyRef = useRef(showMyClasses);
-  const sheetUrl = useRef('');
-  const sheetsPageCodes = useRef([]);
+  const sheetUrl = useRef(DEFAULT_SHEET_URL);
+  const sheetsPageCodes = useRef(DEFAULT_SHEET_CODES);
   const configLoaded = useRef(false);
   const mounted = useRef(true);
   const fetchSeq = useRef(0);
@@ -37,6 +46,20 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
   useEffect(() => {
     mounted.current = true;
     return () => { mounted.current = false; };
+  }, []);
+
+  // Roll the filter over to the next day once the clock passes 4pm.
+  useEffect(() => {
+    let lastDay = getEffectiveDay();
+    const check = () => {
+      const nextDay = getEffectiveDay();
+      if (nextDay !== lastDay) {
+        lastDay = nextDay;
+        setFilter(nextDay);
+      }
+    };
+    const id = setInterval(check, 60 * 1000);
+    return () => clearInterval(id);
   }, []);
 
   // Filter + sort a full day-sheet payload against the saved classes / query.
@@ -103,13 +126,13 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
       try {
         const json = await fetchSheetConfig();
         if (cancelled) return;
-        sheetUrl.current = json.karachi.url;
-        sheetsPageCodes.current = json.karachi.codes;
-        localStorage.setItem('url', json.karachi.url);
-        localStorage.setItem('cod', JSON.stringify(json.karachi.codes));
+        sheetUrl.current = json.url || DEFAULT_SHEET_URL;
+        sheetsPageCodes.current = json.codes.length > 0 ? json.codes : DEFAULT_SHEET_CODES;
+        localStorage.setItem('url', sheetUrl.current);
+        localStorage.setItem('cod', JSON.stringify(sheetsPageCodes.current));
       } catch {
-        sheetUrl.current = localStorage.getItem('url');
-        sheetsPageCodes.current = safeParse(localStorage.getItem('cod'), []);
+        sheetUrl.current = localStorage.getItem('url') || DEFAULT_SHEET_URL;
+        sheetsPageCodes.current = safeParse(localStorage.getItem('cod'), DEFAULT_SHEET_CODES);
       }
       configLoaded.current = true;
       if (!cancelled) {
@@ -189,8 +212,8 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
           key={'day' + index}
           role="button"
           tabIndex={0}
-          aria-pressed={Filter === d.sheet}
-          className={Filter === d.sheet ? 'day-filter-item active' : 'day-filter-item'}
+          aria-pressed={Filter.toLowerCase() === d.sheet.toLowerCase()}
+          className={Filter.toLowerCase() === d.sheet.toLowerCase() ? 'day-filter-item active' : 'day-filter-item'}
           onClick={() => setFilter(d.sheet)}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter(d.sheet); } }}
         >
@@ -224,7 +247,7 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
             onClick={() => setShowAddClassesPopup(true)}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowAddClassesPopup(true); } }}
           >
-            <i className="fa fa-plus"></i>
+            <i className="fa fa-plus t-w"></i>
             Add My Classes
           </div>
         )}
@@ -243,13 +266,13 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
               onClick={() => setShowAddClassesPopup(true)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowAddClassesPopup(true); } }}
             >
-              <i className="fa fa-plus"></i>
+              <i className="fa fa-plus t-w"></i>
               Add Classes
             </div>
           </div>
         ) : (
           data
-            .filter((d) => Filter === 'All' || Filter === d.sheet)
+            .filter((d) => Filter === 'All' || Filter.toLowerCase() === d.sheet.toLowerCase())
             .map((d, index) => (
               <React.Fragment key={'day' + index}>
                 <div className="day">{d.sheet}</div>

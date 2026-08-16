@@ -117,7 +117,7 @@ const UpdateNotification = () => {
                         {/* Header */}
                         <div className="update-notification-header">
                             <div className="update-icon">
-                                <i className="fas fa-sparkles"></i>
+                                <i className="fas fa-wand-magic-sparkles"></i>
                             </div>
                             <div className="update-title">
                                 <h2>{currentUpdate.title}</h2>

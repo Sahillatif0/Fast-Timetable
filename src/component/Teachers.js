@@ -8,7 +8,7 @@ const Teachers = () => {
     useEffect(() => {
         const loadFacultyData = async () => {
             try {
-                const response = await fetch(process.env.REACT_APP_DATA_API + '/api/faculty');
+                const response = await fetch('https://sahillatif0.github.io/mnoprs/fct.json');
                 const facultyData = await response.json();
                 setTeachers(facultyData);
                 setLoading(false);
