@@ -112,7 +112,6 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
 
   // Apply cached day-sheets when the config fetch itself failed.
   const applyFromCache = useCallback((cached) => {
-    const seq = ++fetchSeq.current;
     if (!mounted.current) return;
     setData(buildView(cached, '', true));
     setLoading(false);
@@ -150,7 +149,7 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
       }
     })();
     return () => { cancelled = true; };
-  }, [getAllData, loadCachedClasses, setLoading, showNotification]);
+  }, [getAllData, applyFromCache, loadCachedClasses, setLoading, showNotification]);
 
   // Pull-to-refresh handlers.
   const handleTouchStart = (event) => {
@@ -183,10 +182,6 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
     showMyRef.current = val;
     getAllData(val ? '' : searchTxt, val);
   };
-
-  const toggleMyClasses = useMemo(() => (
-    <ToggleMyClasses toggle={showMyClasses} setToggle={handleShowMyClasses} />
-  ), [showMyClasses, searchTxt]);
 
   const dayFilters = useMemo(() => {
     if (data.length === 0) return null;
