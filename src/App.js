@@ -25,7 +25,7 @@ const DownloadPage = lazy(() => import('./component/DownloadPage'));
 const Teachers = lazy(() => import('./component/Teachers'));
 const Classrooms = lazy(() => import('./component/Classrooms'));
 
-// const apk = '/Fast-Timetable.apk'
+const apk = '/Fast-Timetable.apk'
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -143,10 +143,10 @@ function App() {
 
            <SectionAdCard />
            
-           {/* <a href={apk} download='FAST Timetable.apk'>
+           <a href={apk} download='FAST Timetable.apk'>
            {showDownload&&(<div className="download-apk-text" onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}>Download APK </div>)}
            <div className="download-apk" style={{borderRadius: '50%', width: '50px', height: '50px'}} onTouchStart={()=>{handleDownloadDismiss(true)}} onMouseEnter={()=>{handleDownloadDismiss(true)}} onMouseLeave={()=>{handleDownloadDismiss(false)}}><i className="fa fa-arrow-down" style={{paddingLeft: '0px', color: 'white'}}></i></div>
-           </a> */}
+           </a>
       
            {notification && (
              <Notification message={notification.message} background={notification.color} setNotification={() => setNotification(null)}/>
@@ -162,7 +162,7 @@ function App() {
         }/>
         <Route path='/admin/ads' element={<ProtectedRoute><Suspense fallback={<LoadingFallback />}><AdAdmin/></Suspense></ProtectedRoute>}/>
         <Route path='/admin/dashboard' element={<ProtectedRoute><Suspense fallback={<LoadingFallback />}><AdDashboard/></Suspense></ProtectedRoute>}/>
-        {/* <Route path='/download' element={<Suspense fallback={<LoadingFallback />}><DownloadPage apk={apk}/></Suspense>}/> */}
+        <Route path='/download' element={<Suspense fallback={<LoadingFallback />}><DownloadPage apk={apk}/></Suspense>}/>
       </Routes>
     </BrowserRouter>
     </AdProvider>
