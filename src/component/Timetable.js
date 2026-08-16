@@ -149,7 +149,7 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
       }
     })();
     return () => { cancelled = true; };
-  }, [getAllData, applyFromCache, loadCachedClasses, setLoading, showNotification]);
+  }, [getAllData, applyFromCache, setLoading, showNotification]);
 
   // Pull-to-refresh handlers.
   const handleTouchStart = (event) => {
