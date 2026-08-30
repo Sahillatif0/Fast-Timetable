@@ -74,7 +74,11 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
       const classes = day.classes.filter((cl) => {
         const val = cl.val.toLowerCase();
         if (showMyRef.current) {
-          return savedClasses.some((each) => val.includes(String(each.val).toLowerCase()));
+          const cleanVal = val.replace(/[^a-z0-9]/g, '');
+          return savedClasses.some((each) => {
+            const cleanEach = String(each.val).toLowerCase().replace(/[^a-z0-9]/g, '');
+            return cleanVal === cleanEach;
+          });
         }
         if (onlyMyClasses) return val.includes(query);
         return (
