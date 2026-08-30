@@ -5,7 +5,6 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Notification from './component/Notification';
 import html_parse from 'html-react-parser';
-import CheckUpdate from './component/CheckUpdate';
 import Info from './component/Info';
 import DOMPurify from 'dompurify';
 import Timetable from './component/Timetable';
@@ -42,11 +41,11 @@ const SectionAdCard = () => {
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [showDownload, setShowDownload] = useState(true);
+  // const [showDownload, setShowDownload] = useState(true);
   const [notification, setNotification] = useState(null); // { message, color } instead of a React element
   const versionCode = APP_INFO.VERSION_CODE;
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [apkLink, setApkLink] = useState('');
+  // const [showUpdate, setShowUpdate] = useState(false);
+  // const [apkLink, setApkLink] = useState('');
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPwaInstall, setShowPwaInstall] = useState(false);
 
@@ -82,10 +81,6 @@ function App() {
     });
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowDownload(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,18 +90,18 @@ function App() {
         const json = await response.json();
         if (cancelled) return;
         if (json.versionCode > versionCode) {
-          setShowUpdate(true);
+          // setShowUpdate(true);
           localStorage.setItem('vcode', 'true');
         } else {
           localStorage.setItem('vcode', 'false');
         }
-        setApkLink(json.apklink);
+        // setApkLink(json.apklink);
         const sanitizedHtml = json.component ? DOMPurify.sanitize(json.component) : null;
         setAdsComponent(sanitizedHtml ? html_parse(sanitizedHtml) : null);
         localStorage.setItem('apk', json.apklink);
       } catch (err) {
         logger.error('Failed to fetch sheet data:', err);
-        setShowUpdate('true' === localStorage.getItem('vcode'));
+        // setShowUpdate('true' === localStorage.getItem('vcode'));
       }
     };
     fetchSheetData();
@@ -115,7 +110,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDownloadDismiss = useCallback((val) => setShowDownload(val), []);
+  // const handleDownloadDismiss = useCallback((val) => setShowDownload(val), []);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event) => {
@@ -181,15 +176,15 @@ function App() {
            </a> */}
 
            {showPwaInstall && (
-             <a
+             <button
                type="button"
                onClick={handlePwaInstall}
                aria-label="Install app"
                title="Install app"
                className="download-apk"
-               style={{ borderRadius: '50%', width: '50px', height: '50px' }}>
-               <i className="fa fa-arrow-down" aria-hidden="true" style={{color: 'white', paddingLeft: '0px'}}/>
-             </a>
+               style={{ borderRadius: '50%', width: '50px', height: '50px', border: 'none', backgroundColor: '#5349be', cursor: 'pointer' }}>
+               <i className="fa fa-arrow-down" aria-hidden="true" style={{color: 'white', paddingLeft: '0px', fontSize: '18px'}}/>
+             </button>
            )}
 
            {notification && (
