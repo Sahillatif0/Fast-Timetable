@@ -17,6 +17,11 @@ import {
 
 const CLASS_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+const capitalizeWord = (str) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
 const getEffectiveDay = () => {
   const now = new Date();
   const day = now.getDay();
@@ -212,7 +217,7 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
           onClick={() => setFilter(d.sheet)}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter(d.sheet); } }}
         >
-          {d.sheet}
+          {capitalizeWord(d.sheet)}
         </div>
       );
     });
@@ -270,7 +275,7 @@ const Timetable = ({ loading, setLoading, showNotification }) => {
             .filter((d) => Filter === 'All' || Filter.toLowerCase() === d.sheet.toLowerCase())
             .map((d, index) => (
               <React.Fragment key={'day' + index}>
-                <div className="day">{d.sheet}</div>
+                <div className="day">{capitalizeWord(d.sheet)}</div>
                 <Classes data={d.classes} />
               </React.Fragment>
             ))

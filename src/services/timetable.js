@@ -10,11 +10,11 @@ export const DEFAULT_SHEET_URL =
   'https://docs.google.com/spreadsheets/d/1A1p89c0EsncL7GHHaAZOP5YdWnEVLFvMuBGjAQJSLo0/gviz/tq?tqx=out:json&gid=';
 
 export const DEFAULT_SHEET_CODES = [
-  { name: 'MONDAY', gid: '1381330037' },
-  { name: 'TUESDAY', gid: '1945943698' },
-  { name: 'WEDNESDAY', gid: '1092976236' },
-  { name: 'THURSDAY', gid: '1949876201' },
-  { name: 'FRIDAY', gid: '799622896' },
+  { name: 'MONDAY', gid: '1117233428' },
+  { name: 'TUESDAY', gid: '1448810901' },
+  { name: 'WEDNESDAY', gid: '438851112' },
+  { name: 'THURSDAY', gid: '346577696' },
+  { name: 'FRIDAY', gid: '2082830326' },
   { name: 'SATURDAY', gid: '985885879' },
 ];
 
@@ -58,15 +58,42 @@ export const safeParse = (value, fallback) => {
   }
 };
 
+export const GID_SHEET_URL =
+  'https://docs.google.com/spreadsheets/d/1A1p89c0EsncL7GHHaAZOP5YdWnEVLFvMuBGjAQJSLo0/gviz/tq?tqx=out:json&gid=65012983';
+
 export const fetchSheetConfig = async () => {
-  const res = await fetch(SHEET_CONFIG_URL);
-  const json = await res.json();
-  if (!json.karachi) throw new Error('Missing karachi config in data response');
-  const codes = normalizeSheetCodes(json.karachi.codes);
-  return {
-    url: json.karachi.url || DEFAULT_SHEET_URL,
-    codes: codes.length > 0 ? codes : DEFAULT_SHEET_CODES,
-  };
+  try {
+    const res = await fetch(GID_SHEET_URL);
+    const text = await res.text();
+    const rows = parseSheetJson(text);
+    
+    const validDays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    const codes = [];
+    
+    rows.forEach((row) => {
+      if (!row || !Array.isArray(row.c) || row.c.length < 2) return;
+      const name = row.c[0]?.v ? String(row.c[0].v).trim().toUpperCase() : '';
+      const gidVal = row.c[1]?.f || (row.c[1]?.v != null ? String(row.c[1].v) : null);
+      
+      if (validDays.includes(name) && gidVal) {
+        codes.push({ name, gid: gidVal });
+      }
+    });
+
+    const dayOrder = { 'MONDAY': 1, 'TUESDAY': 2, 'WEDNESDAY': 3, 'THURSDAY': 4, 'FRIDAY': 5, 'SATURDAY': 6 };
+    codes.sort((a, b) => (dayOrder[a.name] || 99) - (dayOrder[b.name] || 99));
+
+    return {
+      url: DEFAULT_SHEET_URL,
+      codes: codes.length > 0 ? codes : DEFAULT_SHEET_CODES,
+    };
+  } catch (error) {
+    console.error('Failed to fetch GIDs from sheet, using fallback:', error);
+    return {
+      url: DEFAULT_SHEET_URL,
+      codes: DEFAULT_SHEET_CODES,
+    };
+  }
 };
 
 /**
@@ -83,7 +110,7 @@ export const fetchAllDaySheets = async (sheetUrl, sheetsPageCodes) => {
 
       const classes = [];
       rows.forEach((row, rowIndex) => {
-        if (rowIndex <= 2 || !Array.isArray(row.c)) return;
+        if (rowIndex < 2 || !Array.isArray(row.c)) return;
         const location = row.c[0]?.v || '';
         row.c.forEach((cell, colIndex) => {
           if (colIndex === 0 || !cell || !cell.v) return;

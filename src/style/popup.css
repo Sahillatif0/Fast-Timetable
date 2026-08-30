@@ -296,6 +296,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #cfcfcf;
+}
+
+@media (prefers-color-scheme: dark) {
+  .added-class-tag span {
+    color: white;
+  }
 }
 
 @media  (max-width: 520px){

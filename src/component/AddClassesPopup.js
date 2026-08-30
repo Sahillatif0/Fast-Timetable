@@ -17,6 +17,8 @@ const AddClassesPopup = ({setShowAddClassesPopup, setSavedClasses, savedClasses,
         const flat = [];
         allClasses.forEach(day => {
             (day.classes || []).forEach(cl => {
+                if(cl.val.toLowerCase().includes('bse-5b')){
+                    console.log(cl);}
                 if (!seen.has(cl.val)) {
                     seen.add(cl.val);
                     flat.push({ ...cl, checked: addClasses.some(each => each.val === cl.val) });
