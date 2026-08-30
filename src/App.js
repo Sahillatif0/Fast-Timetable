@@ -206,7 +206,7 @@ function App() {
         }/>
         <Route path='/admin/ads' element={<ProtectedRoute><Suspense fallback={<LoadingFallback />}><AdAdmin/></Suspense></ProtectedRoute>}/>
         <Route path='/admin/dashboard' element={<ProtectedRoute><Suspense fallback={<LoadingFallback />}><AdDashboard/></Suspense></ProtectedRoute>}/>
-        {/* <Route path='/download' element={<Suspense fallback={<LoadingFallback />}><DownloadPage apk={apk}/></Suspense>}/> */}
+        <Route path='/download' element={<Suspense fallback={<LoadingFallback />}><DownloadPage/></Suspense>}/>
       </Routes>
     </BrowserRouter>
     </AdProvider>
